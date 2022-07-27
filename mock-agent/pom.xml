@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>work.skymoyo</groupId>
+        <artifactId>mock</artifactId>
+        <version>0.0.1</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>mock-agent</artifactId>
+    <name>mock-agent</name>
+    <description>mock proxy</description>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <version>3.28.0-GA</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <!--方法一：MANIFEST.MF 配置文件-->
+                        <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
+                        <!--方法二: pom 指定配置-->
+                        <!--<manifestEntries>-->
+                        <!--<Premain-Class>com.skymoyo.agent.MockAgentremain-Class>-->
+                        <!--</manifestEntries>-->
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

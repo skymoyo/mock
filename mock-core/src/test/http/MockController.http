@@ -1,0 +1,44 @@
+POST http://127.0.0.1:8081/mock/allReq/test/dubbo/provider/service/TestService/helloMock
+Accept: application/json
+Content-Type: application/json;charset=UTF-8
+
+{
+  "data": [
+    "ddd"
+  ],
+  "object": 1,
+  "opt": "MOCK",
+  "route": "mock/test/dubbo/provider/service/TestService/helloMock",
+  "uuid": "a7cb460f-a3c4-4f15-87fb-7ccb4fe42449"
+}
+
+###
+
+POST http://127.0.0.1:8081/mock/test/dubbo/provider/service/TestService/helloMock
+Accept: application/json
+Content-Type: application/json;charset=UTF-8
+
+{
+  "data": [
+    "ddd"
+  ],
+  "object": 1,
+  "opt": "MOCK",
+  "route": "mock/test/dubbo/provider/service/TestService/helloMock",
+  "uuid": "a7cb460f-a3c4-4f15-87fb-7ccb4fe42449"
+}
+
+###
+
+POST http://127.0.0.1:8081/mock/test/dubbo/provider/service/TestService/helloMock
+Accept: application/x-www-form-urlencoded
+Content-Type: application/x-www-form-urlencoded
+
+object=1&opt=MOCK
+
+###
+
+GET http://127.0.0.1:8081/mock/test/dubbo/provider/service/TestService/helloMock?object=1&opt=MOCK
+test: test
+
+###

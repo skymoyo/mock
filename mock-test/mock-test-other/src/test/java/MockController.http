@@ -1,0 +1,11 @@
+GET http://127.0.0.1:8080/test/say/123121
+Accept: application/json
+Content-Type: application/json;charset=UTF-8
+
+###
+
+GET http://127.0.0.1:8080/mock/say/123121
+Accept: application/json
+Content-Type: application/json;charset=UTF-8
+
+###

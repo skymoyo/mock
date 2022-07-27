@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="work.skymoyo.mock.core.resource.dao.MockConfigDao">
+
+    <resultMap type="work.skymoyo.mock.core.resource.entity.MockConfig" id="MockConfigMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="mockCode" column="mock_code" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="route" column="route" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="createUser" column="create_user" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateUser" column="update_user" jdbcType="VARCHAR"/>
+    </resultMap>
+
+
+    <select id="queryByRoute" resultMap="MockConfigMap">
+        select
+          id, mock_code,name, route
+        from mock_config
+        where route = #{route}
+    </select>
+
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="MockConfigMap">
+        select
+          id, mock_code, name, route, create_time, create_user, update_time, update_user
+        from mock_config
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="MockConfigMap">
+        select
+          id, mock_code, name, route, create_time, create_user, update_time, update_user
+        from mock_config
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="MockConfigMap">
+        select
+        id, mock_code, name, route, create_time, create_user, update_time, update_user
+        from mock_config
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="mockCode != null and mockCode != ''">
+                and mock_code = #{mockCode}
+            </if>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+            <if test="route != null and route != ''">
+                and route = #{route}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="createUser != null and createUser != ''">
+                and create_user = #{createUser}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="updateUser != null and updateUser != ''">
+                and update_user = #{updateUser}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into mock_config(mock_code, name, route, create_time, create_user, update_time, update_user)
+        values (#{mockCode}, #{name}, #{route}, #{createTime}, #{createUser}, #{updateTime}, #{updateUser})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into mock_config(mock_code, name, route, create_time, create_user, update_time, update_user)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.mockCode}, #{entity.name}, #{entity.route}, #{entity.createTime}, #{entity.createUser},
+            #{entity.updateTime}, #{entity.updateUser})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into mock_config(mock_code, name, route, create_time, create_user, update_time, update_user)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.mockCode}, #{entity.name}, #{entity.route}, #{entity.createTime}, #{entity.createUser},
+            #{entity.updateTime}, #{entity.updateUser})
+        </foreach>
+        on duplicate key update
+        mock_code = values(mock_code) , name = values(name) , route = values(route) , create_time = values(create_time)
+        , create_user = values(create_user) , update_time = values(update_time) , update_user = values(update_user)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update mock_config
+        <set>
+            <if test="mockCode != null and mockCode != ''">
+                mock_code = #{mockCode},
+            </if>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="route != null and route != ''">
+                route = #{route},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="createUser != null and createUser != ''">
+                create_user = #{createUser},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="updateUser != null and updateUser != ''">
+                update_user = #{updateUser},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from mock_config where id = #{id}
+    </delete>
+
+</mapper>
+
