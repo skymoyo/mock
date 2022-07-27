@@ -1,6 +1,6 @@
 # 简介
 
-> 正对com.alibaba.dubbo:2.6.0  提供的低入侵mock工具
+> 针对com.alibaba.dubbo:2.6.0  提供的低入侵mock工具
 
 # 快速开始
 
