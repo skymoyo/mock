@@ -45,4 +45,4 @@ mock.test.dubbo.cusmer.TestServiceTest
 
 
 # todo
-mock-core 响应结果可参数配置话
+mock-core 响应结果可参数配置化
