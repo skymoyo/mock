@@ -1,4 +1,4 @@
-package work.skymoyo.mock.client.api;
+package work.skymoyo.mock.client.client;
 
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
@@ -82,9 +82,7 @@ public class MockHttpClient implements MockClient {
                     //设置消息体
                     httpPost.setEntity(new StringEntity(JSON.toJSONString(req), Charset.forName("UTF-8")));
 
-                    long startTime = System.currentTimeMillis();
                     CloseableHttpResponse response = httpClient.execute(httpPost);
-                    long endTime = System.currentTimeMillis();
 
                     int statusCode = response.getStatusLine().getStatusCode();
                     if (statusCode != HttpStatus.SC_OK) {
@@ -93,7 +91,7 @@ public class MockHttpClient implements MockClient {
 
                     String res = EntityUtils.toString(response.getEntity());
 
-                    log.info("Post接口执行花费时间（单位：毫秒）：{} | " + "状态（0.成功 1.执行方法失败 2.协议错误 3.网络错误）：{} \r\nres:{}", (endTime - startTime), statusCode, res);
+                    log.info("Post接口执行花费时间（单位：毫秒）：{} | 状态（0.成功 1.执行方法失败 2.协议错误 3.网络错误）：{} \r\nres:{}", statusCode, res);
                     return this.resolveRes((String) this.getMockCompile().decode(res), returnClazz);
 
                 } catch (Exception e) {

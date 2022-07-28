@@ -1,4 +1,4 @@
-package work.skymoyo.mock.client.api;
+package work.skymoyo.mock.client.client;
 
 import com.alibaba.fastjson.JSON;
 import org.springframework.util.StringUtils;

@@ -6,11 +6,9 @@ import com.alibaba.dubbo.common.extension.ExtensionLoader;
 import com.alibaba.dubbo.rpc.*;
 import lombok.extern.slf4j.Slf4j;
 import work.skymoyo.mock.client.api.MockClient;
-import work.skymoyo.mock.client.api.MockClientManager;
+import work.skymoyo.mock.client.client.MockClientManager;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
