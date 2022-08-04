@@ -5,6 +5,9 @@
 # 快速开始
 
 ## 项目中引入 mock-client 
+> 一个不叫starter 的 starter
+
+提供netty，http 请求方式。
 
 根据实际情况修改配置
 
@@ -29,7 +32,7 @@ mock.config.compile=defCompile
 
 ## mock-core
 
-提供netty，http 请求方式。
+提供netty，http 接口方式。
 
 - mock_config表定义url配置，
 - mock_rule表定义不同的规则和对应的返回
@@ -42,7 +45,13 @@ mock.config.compile=defCompile
 
 mock.test.dubbo.cusmer.TestServiceTest
 
-
+# 模块
+ - mock-agent: javassist 修改字节码
+ - mock-client: 与服务器通讯的客户端
+ - mock-common: 通用包
+ - mock-core: mock 服务端
+ - mock-rpc: netty 客户端
+ - mock-test: 一些测试内容
 
 # todo
 mock-core 响应结果可参数配置化!!!
