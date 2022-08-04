@@ -1,4 +1,4 @@
-package work.skymoyo.mork.rpc.netty;
+package work.skymoyo.mock.rpc.netty;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;

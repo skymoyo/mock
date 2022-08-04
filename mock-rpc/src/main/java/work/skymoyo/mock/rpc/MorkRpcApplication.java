@@ -1,4 +1,4 @@
-package work.skymoyo.mork.rpc;
+package work.skymoyo.mock.rpc;
 
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;

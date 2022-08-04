@@ -1,4 +1,4 @@
-package work.skymoyo.mork.rpc.netty;
+package work.skymoyo.mock.rpc.netty;
 
 import org.springframework.stereotype.Component;
 

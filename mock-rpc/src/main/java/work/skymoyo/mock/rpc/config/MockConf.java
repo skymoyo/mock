@@ -1,4 +1,4 @@
-package work.skymoyo.mork.rpc.config;
+package work.skymoyo.mock.rpc.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

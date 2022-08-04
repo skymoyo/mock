@@ -1,4 +1,4 @@
-package work.skymoyo.mork.rpc.handler;
+package work.skymoyo.mock.rpc.handler;
 
 
 import com.alibaba.fastjson.JSON;
@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import work.skymoyo.mock.common.model.MockResp;
-import work.skymoyo.mork.rpc.netty.RpcManager;
+import work.skymoyo.mock.rpc.netty.RpcManager;
 
 @Slf4j
 @Component

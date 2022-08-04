@@ -17,8 +17,8 @@ import work.skymoyo.mock.client.spi.CompileManager;
 import work.skymoyo.mock.client.spi.MockCompile;
 import work.skymoyo.mock.common.enums.OptType;
 import work.skymoyo.mock.common.model.MockReq;
-import work.skymoyo.mork.rpc.config.MockConf;
-import work.skymoyo.mork.rpc.netty.ClientInitializer;
+import work.skymoyo.mock.rpc.config.MockConf;
+import work.skymoyo.mock.rpc.netty.ClientInitializer;
 
 import java.nio.charset.Charset;
 import java.util.UUID;

@@ -1,10 +1,10 @@
-package work.skymoyo.mork.rpc.handler;
+package work.skymoyo.mock.rpc.handler;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
 import lombok.extern.slf4j.Slf4j;
-import work.skymoyo.mork.rpc.netty.ClientInitializer;
+import work.skymoyo.mock.rpc.netty.ClientInitializer;
 
 import java.util.concurrent.TimeUnit;
 

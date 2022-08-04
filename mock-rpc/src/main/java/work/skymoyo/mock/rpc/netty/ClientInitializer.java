@@ -1,4 +1,4 @@
-package work.skymoyo.mork.rpc.netty;
+package work.skymoyo.mock.rpc.netty;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -18,10 +18,10 @@ import org.springframework.stereotype.Component;
 import work.skymoyo.mock.common.MockObjectManager;
 import work.skymoyo.mock.common.handler.MockDecoder;
 import work.skymoyo.mock.common.handler.MockEncoder;
-import work.skymoyo.mork.rpc.config.MockConf;
-import work.skymoyo.mork.rpc.handler.HeartBeatHandler;
-import work.skymoyo.mork.rpc.handler.MockIdleStateHandler;
-import work.skymoyo.mork.rpc.handler.RespHandler;
+import work.skymoyo.mock.rpc.config.MockConf;
+import work.skymoyo.mock.rpc.handler.MockIdleStateHandler;
+import work.skymoyo.mock.rpc.handler.HeartBeatHandler;
+import work.skymoyo.mock.rpc.handler.RespHandler;
 
 import javax.annotation.PostConstruct;
 import java.util.concurrent.TimeUnit;

@@ -1,4 +1,4 @@
-package work.skymoyo.mork.rpc.netty;
+package work.skymoyo.mock.rpc.netty;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;

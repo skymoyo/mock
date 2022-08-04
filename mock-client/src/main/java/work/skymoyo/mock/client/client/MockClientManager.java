@@ -5,7 +5,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
-import work.skymoyo.mork.rpc.config.MockConf;
+import work.skymoyo.mock.rpc.config.MockConf;
 
 import java.util.Map;
 

@@ -10,11 +10,11 @@ import work.skymoyo.mock.client.spi.MockCompile;
 import work.skymoyo.mock.common.enums.OptType;
 import work.skymoyo.mock.common.exception.MockException;
 import work.skymoyo.mock.common.model.MockReq;
-import work.skymoyo.mork.rpc.config.MockConf;
-import work.skymoyo.mork.rpc.netty.ChannelManager;
-import work.skymoyo.mork.rpc.netty.ClientInitializer;
-import work.skymoyo.mork.rpc.netty.RpcFuture;
-import work.skymoyo.mork.rpc.netty.RpcManager;
+import work.skymoyo.mock.rpc.config.MockConf;
+import work.skymoyo.mock.rpc.netty.ChannelManager;
+import work.skymoyo.mock.rpc.netty.ClientInitializer;
+import work.skymoyo.mock.rpc.netty.RpcFuture;
+import work.skymoyo.mock.rpc.netty.RpcManager;
 
 import java.util.UUID;
 
