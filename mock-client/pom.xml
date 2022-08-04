@@ -28,13 +28,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.13</version>
-        </dependency>
-
-
-        <dependency>
             <groupId>org.javassist</groupId>
             <artifactId>javassist</artifactId>
             <version>3.28.0-GA</version>
@@ -80,11 +73,13 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <createSourcesJar>true</createSourcesJar>
+                            <createSourcesJar>false</createSourcesJar>
                             <promoteTransitiveDependencies>false</promoteTransitiveDependencies>
                             <artifactSet>
-                                <includes>work.skymoyo:mock-common</includes>
-                                <includes>work.skymoyo:mock-rpc</includes>
+                                <includes>
+                                    <exclude>work.skymoyo:mock-rpc</exclude>
+                                    <exclude>work.skymoyo:mock-common</exclude>
+                                </includes>
                             </artifactSet>
                         </configuration>
                     </execution>
