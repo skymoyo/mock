@@ -74,11 +74,12 @@
                         </goals>
                         <configuration>
                             <createSourcesJar>false</createSourcesJar>
-                            <promoteTransitiveDependencies>false</promoteTransitiveDependencies>
+                            <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
                             <artifactSet>
                                 <includes>
-                                    <exclude>work.skymoyo:mock-rpc</exclude>
-                                    <exclude>work.skymoyo:mock-common</exclude>
+                                    <include>work.skymoyo:mock-rpc</include>
+                                    <include>work.skymoyo:mock-common</include>
+                                    <include>io.netty:netty-all</include>
                                 </includes>
                             </artifactSet>
                         </configuration>
