@@ -39,7 +39,7 @@ public class ProxyScanAgent implements Agent {
             // 根据类分组
             br.lines()
                     .filter(c -> !c.startsWith("#"))
-                    .filter(c -> !StringUtils.isEmpty(c))
+                    .filter(StringUtils::hasLength)
                     .filter(c -> c.trim().length() > 0)
                     .collect(Collectors.groupingBy(s -> s.split("#")[0]))
                     .entrySet()
@@ -51,7 +51,7 @@ public class ProxyScanAgent implements Agent {
                         List<String> methodKeys = values.stream()
                                 .map(m -> m.replace(key, "")
                                         .replace("#", ""))
-                                .filter(m -> !StringUtils.isEmpty(m))
+                                .filter(StringUtils::hasLength)
                                 .collect(Collectors.toList());
 
                         if (values.size() == methodKeys.size()) {
