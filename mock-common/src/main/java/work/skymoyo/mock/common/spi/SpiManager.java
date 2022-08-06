@@ -1,5 +1,7 @@
 package work.skymoyo.mock.common.spi;
 
+import org.springframework.util.ObjectUtils;
+
 import java.util.HashMap;
 import java.util.ServiceLoader;
 
@@ -10,9 +12,11 @@ public final class SpiManager {
         ServiceLoader<T> serviceLoader = ServiceLoader.load(clazz);
 
         for (T next : serviceLoader) {
-            Spi annotation = next.getClass().getAnnotation(Spi.class);
+            Class<?> implClass = next.getClass();
+            Spi annotation = implClass.getAnnotation(Spi.class);
             if (annotation != null) {
-                spiMap.put(annotation.value(), next);
+                String key = annotation.value();
+                spiMap.put(ObjectUtils.isEmpty(key) ? implClass.getSimpleName() : key, next);
             }
         }
 

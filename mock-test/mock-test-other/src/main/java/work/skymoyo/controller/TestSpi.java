@@ -1,16 +1,16 @@
 package work.skymoyo.controller;
 
+import org.springframework.stereotype.Service;
 import work.skymoyo.mock.client.spi.MockCompile;
 import work.skymoyo.mock.common.spi.Spi;
 
 @Spi("testSpi")
+@Service
 public class TestSpi implements MockCompile {
-    @Override
     public Object encode(Object o) {
         return null;
     }
 
-    @Override
     public Object decode(Object o) {
         return null;
     }

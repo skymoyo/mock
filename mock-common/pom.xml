@@ -12,9 +12,8 @@
 
     <artifactId>mock-common</artifactId>
     <name>mock-common</name>
+    <version>${mock.version}</version>
     <description>mock通用</description>
-    <packaging>jar</packaging>
-
 
     <dependencies>
 

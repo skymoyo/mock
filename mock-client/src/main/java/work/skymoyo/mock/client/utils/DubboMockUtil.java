@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentMap;
  * mock 工具类
  */
 @Slf4j
-public class MockUtil {
+public class DubboMockUtil {
     private static final ProxyFactory proxyFactory = ExtensionLoader.getExtensionLoader(ProxyFactory.class).getAdaptiveExtension();
 //    private static final Protocol refprotocol = ExtensionLoader.getExtensionLoader(Protocol.class).getAdaptiveExtension();
 
@@ -48,9 +48,9 @@ public class MockUtil {
 
         try {
             MockClient first = MockClientManager.getOne();
-            if (first != null && MockUtil.isReplaceMethod(method)) {
+            if (first != null && DubboMockUtil.isReplaceMethod(method)) {
                 log.info("mock-agent 接口");
-                String methodKey = MockUtil.getMethodKey(method);
+                String methodKey = DubboMockUtil.getMethodKey(method);
 
                 return first.doMock(method.getReturnType(), methodKey, true, args);
             }

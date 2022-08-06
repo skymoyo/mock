@@ -2,6 +2,18 @@
 
 > 针对com.alibaba.dubbo:2.6.0  提供的低入侵mock工具
 
+# 版本升级
+
+## 0.0.2
+ 
+- 代理mock-agent 改成SPI 加载方式
+- 通过 classpath:MockAgent 指定需要代理的方法
+
+## 0.0.1
+
+- dubbo 2.6.0 代理
+
+
 # 快速开始
 
 ## 项目中引入 mock-client 
@@ -55,3 +67,5 @@ mock.test.dubbo.cusmer.TestServiceTest
 
 # todo
 mock-core 响应结果可参数配置化!!!
+
+

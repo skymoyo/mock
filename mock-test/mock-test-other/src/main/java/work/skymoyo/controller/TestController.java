@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import work.skymoyo.mock.client.client.MockNettyClient;
+import work.skymoyo.service.TestService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,10 +30,20 @@ public class TestController {
     @Autowired
     private MockNettyClient mockNettyClient;
 
+    @Autowired
+    private TestService testService;
+
+
     @GetMapping(value = "/say/{hello}", produces = {"application/json"})
     public String save(@PathVariable("hello") String hello, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         String servletPath = httpServletRequest.getServletPath();
         return mockNettyClient.doMock(String.class, servletPath, false, hello);
+    }
+
+
+    @GetMapping(value = "/proxy/{hello}", produces = {"application/json"})
+    public Object proxy(@PathVariable("hello") String hello) {
+        return testService.helloSpi(hello);
     }
 
 

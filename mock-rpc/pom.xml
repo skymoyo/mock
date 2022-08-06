@@ -16,6 +16,7 @@
 
     <artifactId>mock-rpc</artifactId>
     <name>mock-rpc</name>
+    <version>${mock.version}</version>
     <description>mock远程调用</description>
 
     <dependencies>
