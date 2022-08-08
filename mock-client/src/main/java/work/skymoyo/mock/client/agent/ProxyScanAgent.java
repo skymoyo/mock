@@ -8,10 +8,7 @@ import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
 import work.skymoyo.mock.common.spi.Spi;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,7 +21,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @Slf4j
 public class ProxyScanAgent implements Agent {
 
-    private static String scanPath = "classpath:MockAgent";
+    private static final String SCAN_PATH = "classpath:MockAgent";
 
 
     private static List<String> DEF = new ArrayList<>();
@@ -32,7 +29,18 @@ public class ProxyScanAgent implements Agent {
     @Override
     public void proxy(ClassPool pool) {
 
-        try (InputStream inputStream = new FileInputStream(ResourceUtils.getFile(scanPath));
+        File file;
+        try {
+            file = ResourceUtils.getFile(SCAN_PATH);
+        } catch (FileNotFoundException e) {
+            return;
+        }
+
+        if (!file.exists()) {
+            return;
+        }
+
+        try (InputStream inputStream = new FileInputStream(file);
              InputStreamReader isr = new InputStreamReader(inputStream, UTF_8);
              BufferedReader br = new BufferedReader(isr)) {
 

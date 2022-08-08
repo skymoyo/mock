@@ -11,6 +11,7 @@
 
     <artifactId>mock-agent</artifactId>
     <name>mock-agent</name>
+    <version>${mock.version}</version>
     <description>mock proxy</description>
 
     <dependencies>
