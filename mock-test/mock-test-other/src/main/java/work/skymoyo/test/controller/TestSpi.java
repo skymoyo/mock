@@ -1,4 +1,4 @@
-package work.skymoyo.controller;
+package work.skymoyo.test.controller;
 
 import org.springframework.stereotype.Service;
 import work.skymoyo.mock.client.spi.MockCompile;

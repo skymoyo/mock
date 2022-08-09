@@ -1,4 +1,4 @@
-package work.skymoyo.controller;
+package work.skymoyo.test.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

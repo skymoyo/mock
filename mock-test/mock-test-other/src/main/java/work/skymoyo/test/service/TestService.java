@@ -1,4 +1,4 @@
-package work.skymoyo.service;
+package work.skymoyo.test.service;
 
 import org.springframework.stereotype.Service;
 

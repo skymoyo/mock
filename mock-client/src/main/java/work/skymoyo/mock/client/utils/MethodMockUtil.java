@@ -14,12 +14,12 @@ public class MethodMockUtil {
             MockClient first = MockClientManager.getOne();
 
             if (first == null) {
-                throw new RuntimeException("mock client 未不加载");
+                throw new RuntimeException("mock client 未加载");
             }
 
             return first.doMock(returnType, methodName, true, args);
         } catch (Exception e) {
-            log.warn("代码方法异常{}", e.getMessage(), e);
+            log.warn("代理方法:{}  执行异常:{}", methodName, e.getMessage(), e);
             throw e;
         }
 

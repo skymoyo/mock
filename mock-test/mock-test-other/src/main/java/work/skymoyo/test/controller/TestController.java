@@ -1,4 +1,4 @@
-package work.skymoyo.controller;
+package work.skymoyo.test.controller;
 
 import com.alibaba.fastjson.JSON;
 import lombok.AllArgsConstructor;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import work.skymoyo.mock.client.client.MockNettyClient;
-import work.skymoyo.service.TestService;
+import work.skymoyo.test.service.TestService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,7 +27,7 @@ import java.util.Map;
 @RequestMapping("/test")
 public class TestController {
 
-    @Autowired
+    @Autowired(required = false)
     private MockNettyClient mockNettyClient;
 
     @Autowired
