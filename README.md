@@ -8,6 +8,7 @@
  
 - 代理mock-agent 改成SPI 加载方式
 - 通过 classpath:MockAgent 指定需要代理的方法
+- 经过代理后通过 mock.config.enable 配置 控制是否进行mock
 
 ## 0.0.1
 

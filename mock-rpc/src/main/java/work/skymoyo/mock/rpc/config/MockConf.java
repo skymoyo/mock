@@ -27,6 +27,8 @@ public class MockConf {
 
     private String rpc;
 
+    private boolean enable;
+
     public Integer getRetry() {
         return Optional.ofNullable(retry).orElse(5);
     }

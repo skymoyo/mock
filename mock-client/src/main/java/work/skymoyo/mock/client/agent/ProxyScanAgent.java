@@ -33,6 +33,7 @@ public class ProxyScanAgent implements Agent {
         try {
             file = ResourceUtils.getFile(SCAN_PATH);
         } catch (FileNotFoundException e) {
+            log.warn("{}:文件不存在,忽略执行", SCAN_PATH);
             return;
         }
 
@@ -46,9 +47,9 @@ public class ProxyScanAgent implements Agent {
 
             // 根据类分组
             br.lines()
-                    .filter(c -> !c.startsWith("#"))
                     .filter(StringUtils::hasLength)
-                    .filter(c -> c.trim().length() > 0)
+                    .map(String::trim)
+                    .filter(c -> !c.startsWith("#"))
                     .collect(Collectors.groupingBy(s -> s.split("#")[0]))
                     .entrySet()
                     .stream()
@@ -69,43 +70,26 @@ public class ProxyScanAgent implements Agent {
                         //表示具有 未设置方法的类
                         return DEF;
                     }))
-                    .forEach((k, v) -> {
-                        log.debug("处理class:{}", k);
+                    .forEach((className, methodList) -> {
+                        log.debug("处理class:{}", className);
                         try {
-                            CtClass ctClass = pool.get(k);
-                            if (v.isEmpty()) {
+                            CtClass ctClass = pool.get(className);
+
+                            if (methodList.isEmpty()) {
                                 Arrays.stream(ctClass.getDeclaredMethods())
                                         .forEach(method -> {
-                                            String methodKey = k + "#" + method.getName();
-                                            log.debug("处理 {}", methodKey);
-                                            try {
-                                                method.setBody("{"
-                                                        + "return work.skymoyo.mock.client.utils.MethodMockUtil.ProxyInvoker(\"" + methodKey + "\", $type, $args);"
-                                                        + "}");
-                                            } catch (Exception ignored) {
-                                            }
+                                            this.createMethod(ctClass, className, method.getName());
                                         });
-
                             } else {
-                                v.forEach(m -> {
-                                    String methodKey = k + "#" + m;
-                                    log.debug("处理 {}", methodKey);
-                                    try {
-                                        CtMethod method = ctClass.getDeclaredMethod(m);
-                                        method.setBody("{"
-                                                + "return work.skymoyo.mock.client.utils.MethodMockUtil.ProxyInvoker(\"" + methodKey + "\", $type, $args);"
-                                                + "}");
-                                    } catch (Exception ignored) {
-                                    }
+                                methodList.forEach(methodName -> {
+                                    this.createMethod(ctClass, className, methodName);
                                 });
-
                             }
-
 
                             ctClass.toClass();
 
-                        } catch (Exception ignored) {
-
+                        } catch (Exception e) {
+                            log.warn("处理class:{} 异常:{}", className, e.getMessage(), e);
                         }
                     });
         } catch (Exception e) {
@@ -113,6 +97,23 @@ public class ProxyScanAgent implements Agent {
         }
 
 
+    }
+
+    private void createMethod(CtClass ctClass, String clazzName, String methodName) {
+        String methodKey = clazzName + "#" + methodName;
+        log.debug("处理方法:{}", methodKey);
+        try {
+            CtMethod method = ctClass.getDeclaredMethod(methodName);
+
+            method.insertBefore("try{"
+                    + "if(work.skymoyo.mock.client.utils.MockContextUtil.isEnableMock()){"
+                    + "     return work.skymoyo.mock.client.utils.MethodMockUtil.proxyInvoker(\"" + methodKey + "\", $type, $args);"
+                    + "  }"
+                    + "} catch (Throwable ignored){"
+                    + "}");
+        } catch (Exception e) {
+            log.warn("处理方法:{} 异常:{}", methodKey, e.getMessage(), e);
+        }
     }
 
 

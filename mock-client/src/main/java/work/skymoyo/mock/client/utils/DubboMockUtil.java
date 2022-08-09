@@ -5,8 +5,6 @@ import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.common.extension.ExtensionLoader;
 import com.alibaba.dubbo.rpc.*;
 import lombok.extern.slf4j.Slf4j;
-import work.skymoyo.mock.client.client.MockClient;
-import work.skymoyo.mock.client.client.MockClientManager;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.ConcurrentHashMap;
@@ -47,13 +45,13 @@ public class DubboMockUtil {
         }
 
         try {
-            MockClient first = MockClientManager.getOne();
-            if (first != null && DubboMockUtil.isReplaceMethod(method)) {
+            if (MockContextUtil.isEnableMock()) {
                 log.info("mock-agent 接口");
                 String methodKey = DubboMockUtil.getMethodKey(method);
 
-                return first.doMock(method.getReturnType(), methodKey, true, args);
+                return MethodMockUtil.proxyInvoker(methodKey, method.getReturnType(), args);
             }
+
         } catch (Throwable e) {
             log.warn("mock-agent 接口异常 执行原有逻辑{}", e.getMessage(), e);
         }
@@ -62,15 +60,6 @@ public class DubboMockUtil {
 
     }
 
-
-    //todo 配置那些接口 需要mock
-    public static boolean isReplaceMethod(Method sourceMethod) {
-//        String methodName = BaseMethod.getMethodKey(sourceMethod);
-//        long count = replaceMethod.stream()
-//                .filter(s -> s.equals(methodName))
-//                .count();
-        return true;
-    }
 
     public static String getMethodKey(Method sourceMethod) {
         return sourceMethod.getDeclaringClass().getName() + "#" + sourceMethod.getName();

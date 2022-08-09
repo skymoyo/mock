@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 public class TestService {
 
     public String helloSpi(String hello) {
-        return null;
+        return "hello";
     }
 
 }

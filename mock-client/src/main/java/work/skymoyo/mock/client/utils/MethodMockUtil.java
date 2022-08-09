@@ -8,15 +8,21 @@ import work.skymoyo.mock.client.client.MockClientManager;
 public class MethodMockUtil {
 
 
-    public static Object ProxyInvoker(String method, Class<?> returnType, Object[] args) {
+    public static <T> T proxyInvoker(String methodName, Class<T> returnType, Object[] args) {
 
         try {
             MockClient first = MockClientManager.getOne();
-            return first.doMock(returnType, method, true, args);
+
+            if (first == null) {
+                throw new RuntimeException("mock client 未不加载");
+            }
+
+            return first.doMock(returnType, methodName, true, args);
         } catch (Exception e) {
             log.warn("代码方法异常{}", e.getMessage(), e);
+            throw e;
         }
-        return null;
+
     }
 
 
