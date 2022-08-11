@@ -17,6 +17,7 @@ import work.skymoyo.mock.rpc.netty.RpcFuture;
 import work.skymoyo.mock.rpc.netty.RpcManager;
 
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Component
@@ -62,7 +63,14 @@ public final class MockNettyClient implements MockClient {
         future.sendMsg(req);
 
         try {
-            return this.resolveRes((String) this.getMockCompile().decode(future.get()), returnClazz);
+            Object resp = future.get(10, TimeUnit.SECONDS);
+            if (resp == null) {
+                throw new MockException("mockNettyClient timeout");
+            }
+
+            return this.resolveRes((String) this.getMockCompile().decode(resp), returnClazz);
+        } catch (MockException e) {
+            throw e;
         } catch (Exception e) {
             throw new MockException(e.getMessage());
         }

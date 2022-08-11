@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import work.skymoyo.mock.client.spi.CompileManager;
 import work.skymoyo.mock.client.spi.MockCompile;
 import work.skymoyo.mock.common.enums.OptType;
+import work.skymoyo.mock.common.exception.MockException;
 import work.skymoyo.mock.common.model.MockReq;
 import work.skymoyo.mock.rpc.config.MockConf;
 import work.skymoyo.mock.rpc.netty.ClientInitializer;
@@ -65,45 +66,38 @@ public class MockHttpClient implements MockClient {
             HttpPost httpPost = new HttpPost(mockConf.getHost() + ":" + mockConf.getPort() + mockConf.getPrefix() + url);
             httpPost.setConfig(MockHttpClient.REQUEST_CONFIG);
 
-            if (httpPost != null && paras != null) {
-                try {
-                    //设置消息头
-                    httpPost.addHeader("Content-type", "application/json;charset=utf-8");
-                    httpPost.setHeader("Accept", "application/json");
+            //设置消息头
+            httpPost.addHeader("Content-type", "application/json;charset=utf-8");
+            httpPost.setHeader("Accept", "application/json");
 
-                    MockReq<Object> req = new MockReq<>();
-                    req.setUuid(UUID.randomUUID().toString());
-                    req.setOpt(OptType.MOCK);
-                    req.setRoute(url);
-                    req.setData(this.getMockCompile().encode(paras));
+            MockReq<Object> req = new MockReq<>();
+            req.setUuid(UUID.randomUUID().toString());
+            req.setOpt(OptType.MOCK);
+            req.setRoute(url);
+            req.setData(this.getMockCompile().encode(paras));
 
-                    log.info("[{}]发送post[{}]", url, JSON.toJSONString(req));
+            log.info("[{}]mockHttpClient req[{}]", url, JSON.toJSONString(req));
 
-                    //设置消息体
-                    httpPost.setEntity(new StringEntity(JSON.toJSONString(req), Charset.forName("UTF-8")));
+            //设置消息体
+            httpPost.setEntity(new StringEntity(JSON.toJSONString(req), Charset.forName("UTF-8")));
 
-                    CloseableHttpResponse response = httpClient.execute(httpPost);
+            CloseableHttpResponse response = httpClient.execute(httpPost);
 
-                    int statusCode = response.getStatusLine().getStatusCode();
-                    if (statusCode != HttpStatus.SC_OK) {
-                        log.info("接口执行失败：{}", response.getStatusLine());
-                    }
-
-                    String res = EntityUtils.toString(response.getEntity());
-
-                    log.info("Post接口执行花费时间（单位：毫秒）：{} | 状态（0.成功 1.执行方法失败 2.协议错误 3.网络错误）：{} \r\nres:{}", statusCode, res);
-                    return this.resolveRes((String) this.getMockCompile().decode(res), returnClazz);
-
-                } catch (Exception e) {
-                    log.error("Post接口执行时错误:{}", e.getMessage(), e);
-                    throw new RuntimeException("Post接口执行时错误 " + e.getMessage());
-                }
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode != HttpStatus.SC_OK) {
+                log.info("mockHttpClient error：{}", response.getStatusLine());
             }
+
+            String res = EntityUtils.toString(response.getEntity());
+            log.info("mockHttpClient res:{}", res);
+
+            return this.resolveRes((String) this.getMockCompile().decode(res), returnClazz);
+
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
+            log.error("mockHttpClient error：{}", e.getMessage(), e);
+            throw new MockException(e.getMessage());
         }
 
-        return null;
     }
 
 

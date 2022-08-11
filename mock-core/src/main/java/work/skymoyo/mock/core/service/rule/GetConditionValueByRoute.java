@@ -10,7 +10,7 @@ public class GetConditionValueByRoute implements MockConditionService<Object> {
 
     @Override
     public String mockConditionValue(MockReq<Object> req, MockCondition f) {
-        return req.getRoute().replace("mock", "").replace("/mock", "");
+        return req.getRoute();
     }
 
 }

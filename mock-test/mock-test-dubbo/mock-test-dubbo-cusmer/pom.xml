@@ -6,22 +6,24 @@
         <artifactId>mock-test-dubbo</artifactId>
         <groupId>work.skymoyo</groupId>
         <version>0.0.1</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>mock-test-dubbo-cusmer</artifactId>
+    <version>${mock.version}</version>
 
     <dependencies>
         <dependency>
             <groupId>work.skymoyo</groupId>
             <artifactId>mock-test-dubbo-provider</artifactId>
-            <version>0.0.1</version>
+            <version>${mock.version}</version>
         </dependency>
 
         <dependency>
             <groupId>work.skymoyo</groupId>
             <artifactId>mock-client</artifactId>
-            <version>0.0.1</version>
+            <version>${mock.version}</version>
         </dependency>
 
 

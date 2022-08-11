@@ -14,7 +14,11 @@ public interface MockClient {
      * @return
      */
     default String getMockUrl(String packageName) {
-        return packageName.replaceAll("\\.", "/").replaceAll("#", "/");
+        String methodKey = packageName.replaceAll("\\.", "/").replaceAll("#", "/");
+        if (methodKey.startsWith("/")) {
+            return methodKey;
+        }
+        return "/" + methodKey;
     }
 
     //todo 这里不太合适

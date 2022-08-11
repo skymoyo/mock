@@ -1,14 +1,20 @@
 # 简介
 
-> 针对com.alibaba.dubbo:2.6.0  提供的低入侵mock工具
+>  提供的低入侵mock工具
+ - 实现 com.alibaba.dubbo:2.6.0 mock
+ - classpath:MockAgent 指定需要代理的方法
 
 # 版本升级
 
 ## 0.0.2
  
+**feature:**
 - 代理mock-agent 改成SPI 加载方式
 - 通过 classpath:MockAgent 指定需要代理的方法
 - 经过代理后通过 mock.config.enable 配置 控制是否进行mock
+
+**fix:**
+ - netty客户端超过1024字节接口不完整
 
 ## 0.0.1
 

@@ -39,9 +39,8 @@ public class MockServiceImpl implements MockService {
     public String mock(MockReq<Object> req) {
 
         String route = req.getRoute();
-        String realRoute = route.replace("mock", "").replace("/mock", "");
 
-        MockConfig config = mockConfigDao.queryByRoute(realRoute);
+        MockConfig config = mockConfigDao.queryByRoute(route);
         if (config == null) {
             throw new MockException("定义配置信息为空");
         }
@@ -87,7 +86,7 @@ public class MockServiceImpl implements MockService {
         log.info("http接口请求");
         MockReq<Object> req = new MockReq<>();
 
-        req.setRoute(request.getServletPath());
+        req.setRoute(request.getServletPath().replace("/mock", "").replace("mock", ""));
         req.setHead(this.getReqHead(request));
         req.setData(this.getReqData(request));
         req.setOpt(OptType.MOCK);
