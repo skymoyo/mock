@@ -1,8 +1,10 @@
 package work.skymoyo.mock.common.spi;
 
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.ServiceLoader;
 
 public final class SpiManager {
@@ -13,11 +15,13 @@ public final class SpiManager {
 
         for (T next : serviceLoader) {
             Class<?> implClass = next.getClass();
-            Spi annotation = implClass.getAnnotation(Spi.class);
-            if (annotation != null) {
-                String key = annotation.value();
-                spiMap.put(ObjectUtils.isEmpty(key) ? implClass.getSimpleName() : key, next);
-            }
+
+            String key = Optional.ofNullable(implClass.getAnnotation(Spi.class))
+                    .map(Spi::value)
+                    .map(k -> StringUtils.hasLength(k) ? k : null)
+                    .orElse(implClass.getSimpleName());
+
+            spiMap.put(key, next);
         }
 
         return spiMap;

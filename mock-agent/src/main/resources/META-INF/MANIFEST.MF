@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Implementation-Title: mock-agent
-Implementation-Version: 0.0.1
+Implementation-Version: 0.0.2
 Spring-Boot-Layers-Index: BOOT-INF/layers.idx
 Premain-Class: work.skymoyo.mock.agent.MockAgent
 Start-Class: work.skymoyo.mock.agent.MockAgent

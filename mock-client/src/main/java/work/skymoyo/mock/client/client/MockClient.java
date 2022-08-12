@@ -27,22 +27,26 @@ public interface MockClient {
         if (clazz.equals(void.class) || clazz.equals(Void.class)) {
             return (T) "";
         }
-        if (StringUtils.isEmpty(res)) {
+        if (!StringUtils.hasLength(res)) {
             return null;
         }
+
         if (clazz.equals(BigDecimal.class)) {
             return (T) new BigDecimal(res);
-        } else if (clazz.equals(Long.class)) {
+        }
+        if (clazz.equals(Long.class) || clazz.equals(long.class)) {
             return (T) Long.valueOf(res);
-        } else if (clazz.equals(long.class)) {
-            return (T) Long.valueOf(res);
-        } else if (clazz.equals(Integer.class)) {
+        }
+        if (clazz.equals(Integer.class) || clazz.equals(int.class)) {
             return (T) Integer.valueOf(res);
-        } else if (clazz.equals(int.class)) {
-            return (T) Integer.valueOf(res);
-        } else if (clazz.equals(String.class)) {
+        }
+        if (clazz.equals(Boolean.class) || clazz.equals(boolean.class)) {
+            return (T) Boolean.valueOf(res);
+        }
+        if (clazz.equals(String.class)) {
             return (T) res;
         }
+
         return JSON.parseObject(res, clazz);
     }
 

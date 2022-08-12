@@ -4,5 +4,5 @@ import javassist.ClassPool;
 
 public interface Agent {
 
-    void proxy(ClassPool pool);
+    void proxy(ClassPool pool) throws Throwable;
 }

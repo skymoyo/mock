@@ -19,7 +19,7 @@ import java.util.Objects;
 @Slf4j
 @Component
 @ChannelHandler.Sharable
-public class MockReqHandler extends SimpleChannelInboundHandler<MockReq> {
+public class MockReqHandler extends SimpleChannelInboundHandler<MockReq<Object>> {
 
     @Autowired
     private MockService mockService;
@@ -28,12 +28,12 @@ public class MockReqHandler extends SimpleChannelInboundHandler<MockReq> {
     private MockContext mockContext;
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, MockReq req) {
+    protected void channelRead0(ChannelHandlerContext ctx, MockReq<Object> req) {
         log.info("mock服务端接收到消息{}", JSON.toJSONString(req, SerializerFeature.PrettyFormat));
 
         mockContext.setLocalMockReq(req);
 
-        MockResp<String> resp = new MockResp<>();
+        MockResp<Object> resp = new MockResp<>();
         resp.setUuid(req.getUuid());
         resp.setData(mockService.mock(req));
 
@@ -46,7 +46,7 @@ public class MockReqHandler extends SimpleChannelInboundHandler<MockReq> {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         log.error("mock handler catch the operation exception.", cause);
-        MockReq<String> req = mockContext.getLocalMockReq();
+        MockReq req = mockContext.getLocalMockReq();
         mockContext.remove();
 
         //这里有问题，断开链接，也会进入这里
@@ -54,7 +54,7 @@ public class MockReqHandler extends SimpleChannelInboundHandler<MockReq> {
             return;
         }
 
-        MockResp<String> resp = new MockResp<>();
+        MockResp resp = new MockResp<>();
         resp.setUuid(req.getUuid());
         resp.setMsg(cause.getMessage());
 

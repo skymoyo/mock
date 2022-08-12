@@ -9,10 +9,7 @@ import org.springframework.util.StringUtils;
 import work.skymoyo.mock.common.spi.Spi;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -24,7 +21,7 @@ public class ProxyScanAgent implements Agent {
     private static final String SCAN_PATH = "classpath:MockAgent";
 
 
-    private static List<String> DEF = new ArrayList<>();
+    private static Set<String> DEF = new HashSet<>(0);
 
     @Override
     public void proxy(ClassPool pool) {
@@ -57,11 +54,11 @@ public class ProxyScanAgent implements Agent {
                         String key = e.getKey();
                         List<String> values = e.getValue();
 
-                        List<String> methodKeys = values.stream()
+                        Set<String> methodKeys = values.stream()
                                 .map(m -> m.replace(key, "")
                                         .replace("#", ""))
                                 .filter(StringUtils::hasLength)
-                                .collect(Collectors.toList());
+                                .collect(Collectors.toSet());
 
                         if (values.size() == methodKeys.size()) {
                             return methodKeys;
@@ -78,11 +75,18 @@ public class ProxyScanAgent implements Agent {
                             if (methodList.isEmpty()) {
                                 Arrays.stream(ctClass.getDeclaredMethods())
                                         .forEach(method -> {
-                                            this.createMethod(ctClass, className, method.getName());
+                                            this.createMethod(className, method);
                                         });
                             } else {
                                 methodList.forEach(methodName -> {
-                                    this.createMethod(ctClass, className, methodName);
+                                    try {
+                                        CtMethod[] methodArrays = ctClass.getDeclaredMethods(methodName);
+                                        for (CtMethod method : methodArrays) {
+                                            this.createMethod(className, method);
+                                        }
+                                    } catch (Exception e) {
+                                        log.warn("处理方法:{} 异常:{}", className + "#" + methodName, e.getMessage(), e);
+                                    }
                                 });
                             }
 
@@ -99,18 +103,21 @@ public class ProxyScanAgent implements Agent {
 
     }
 
-    private void createMethod(CtClass ctClass, String clazzName, String methodName) {
-        String methodKey = clazzName + "#" + methodName;
-        log.debug("处理方法:{}", methodKey);
+    private void createMethod(String clazzName, CtMethod method) {
+        String methodKey = clazzName + "#" + method.getName();
         try {
-            CtMethod method = ctClass.getDeclaredMethod(methodName);
+            log.debug("处理方法:{},参数列表：{}", methodKey, Arrays.stream(method.getParameterTypes()).map(CtClass::getName).toArray());
+
+            String returnType = method.getReturnType().getName();
 
             method.insertBefore("try{"
                     + "if(work.skymoyo.mock.client.utils.MockContextUtil.isEnableMock()){"
-                    + "     return work.skymoyo.mock.client.utils.MethodMockUtil.proxyInvoker(\"" + methodKey + "\", $type, $args);"
+                    + " Object obj  =  work.skymoyo.mock.client.utils.MethodMockUtil.proxyInvoker(\"" + methodKey + "\", $type, $args);"
+                    + " return (" + returnType + ") obj;"
                     + "  }"
                     + "} catch (Throwable ignored){"
                     + "}");
+
         } catch (Exception e) {
             log.warn("处理方法:{} 异常:{}", methodKey, e.getMessage(), e);
         }

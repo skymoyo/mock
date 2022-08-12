@@ -15,6 +15,7 @@
 
 **fix:**
  - netty客户端超过1024字节接口不完整
+ - agent代理方法retureClass是pojo编译失败
 
 ## 0.0.1
 

@@ -16,7 +16,12 @@ public class AgentManager {
         HashMap<String, Agent> spiMap = SpiManager.getSpiMap(Agent.class);
 
         spiMap.forEach((k, v) -> {
-            v.proxy(pool);
+            try {
+                log.debug("agent spi加载 :{}", k);
+                v.proxy(pool);
+            } catch (Throwable e) {
+                log.debug("agent spi加载:{}异常：{}", k, e.getMessage(), e);
+            }
         });
 
     }
