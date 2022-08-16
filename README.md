@@ -15,7 +15,7 @@
 
 **fix:**
  - netty客户端超过1024字节接口不完整
- - agent代理方法retureClass是pojo编译失败
+ - agent代理方法retureClass是pojo导致编译失败
 
 ## 0.0.1
 
@@ -40,7 +40,7 @@ mock.config.port=18081
 # http客户端 链接配置
 #mock.config.host=http://127.0.0.1
 #mock.config.port=8081
-#mock.config.prefix=/mock/allReq/
+#mock.config.prefix=/mock/allReq
 #mock.config.rpc=mockHttpClient
 #激活mock
 mock.config.enable=true

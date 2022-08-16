@@ -21,7 +21,7 @@ public class ProxyScanAgent implements Agent {
     private static final String SCAN_PATH = "classpath:MockAgent";
 
 
-    private static Set<String> DEF = new HashSet<>(0);
+    private static List<String> DEF = new ArrayList<>(0);
 
     @Override
     public void proxy(ClassPool pool) {
@@ -47,6 +47,7 @@ public class ProxyScanAgent implements Agent {
                     .filter(StringUtils::hasLength)
                     .map(String::trim)
                     .filter(c -> !c.startsWith("#"))
+                    .distinct()
                     .collect(Collectors.groupingBy(s -> s.split("#")[0]))
                     .entrySet()
                     .stream()
@@ -54,11 +55,10 @@ public class ProxyScanAgent implements Agent {
                         String key = e.getKey();
                         List<String> values = e.getValue();
 
-                        Set<String> methodKeys = values.stream()
-                                .map(m -> m.replace(key, "")
-                                        .replace("#", ""))
+                        List<String> methodKeys = values.stream()
+                                .map(m -> m.replace(key + "#", ""))
                                 .filter(StringUtils::hasLength)
-                                .collect(Collectors.toSet());
+                                .collect(Collectors.toList());
 
                         if (values.size() == methodKeys.size()) {
                             return methodKeys;
