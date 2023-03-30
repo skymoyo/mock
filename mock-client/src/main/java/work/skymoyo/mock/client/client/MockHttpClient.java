@@ -12,6 +12,9 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.ApplicationListener;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import work.skymoyo.mock.client.spi.CompileManager;
 import work.skymoyo.mock.client.spi.MockCompile;
@@ -27,7 +30,7 @@ import java.util.UUID;
 @Slf4j
 @Component
 @ConditionalOnMissingBean(ClientInitializer.class)
-public class MockHttpClient implements MockClient {
+public class MockHttpClient implements MockClient, ApplicationListener<ApplicationReadyEvent> {
 
     @Autowired
     private CompileManager compileManager;
@@ -44,15 +47,10 @@ public class MockHttpClient implements MockClient {
             .build();
 
 
-    /**
-     * 从这里直接获取，否者有NPE风险
-     *
-     * @return
-     */
-    private MockCompile getMockCompile() {
-        return mockCompile == null ? this.mockCompile = compileManager.getSpiMap(mockConf.getCompile()) : mockCompile;
+    @Override
+    public void onApplicationEvent(@Nullable ApplicationReadyEvent event) {
+        mockCompile = compileManager.getSpiMap(mockConf.getCompile(), event);
     }
-
 
     @Override
     public <R> R doMock(Class<R> returnClazz, String url, boolean isRpc, Object... paras) {
@@ -74,7 +72,7 @@ public class MockHttpClient implements MockClient {
             req.setUuid(UUID.randomUUID().toString());
             req.setOpt(OptType.MOCK);
             req.setRoute(url);
-            req.setData(this.getMockCompile().decode(paras));
+            req.setData(mockCompile.decode(paras));
 
             log.info("[{}]mockHttpClient req[{}]", url, JSON.toJSONString(req));
 
@@ -91,7 +89,7 @@ public class MockHttpClient implements MockClient {
             String res = EntityUtils.toString(response.getEntity());
             log.info("mockHttpClient res:{}", res);
 
-            return this.resolveRes((String) this.getMockCompile().encode(res), returnClazz);
+            return this.resolveRes((String) mockCompile.encode(res), returnClazz);
 
         } catch (Exception e) {
             log.error("mockHttpClient error：{}", e.getMessage(), e);

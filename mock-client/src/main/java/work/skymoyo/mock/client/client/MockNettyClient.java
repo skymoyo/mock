@@ -4,6 +4,9 @@ package work.skymoyo.mock.client.client;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.ApplicationListener;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import work.skymoyo.mock.client.spi.CompileManager;
 import work.skymoyo.mock.client.spi.MockCompile;
@@ -22,13 +25,12 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Component
 @ConditionalOnBean(ClientInitializer.class)
-public final class MockNettyClient implements MockClient {
+public final class MockNettyClient implements MockClient, ApplicationListener<ApplicationReadyEvent> {
 
     @Autowired
     private RpcManager rpcManager;
     @Autowired
     private ChannelManager channelManager;
-
     @Autowired
     private CompileManager compileManager;
     @Autowired
@@ -36,14 +38,9 @@ public final class MockNettyClient implements MockClient {
 
     private MockCompile mockCompile;
 
-
-    /**
-     * 从这里直接获取，否者有NPE风险
-     *
-     * @return
-     */
-    private MockCompile getMockCompile() {
-        return mockCompile == null ? this.mockCompile = compileManager.getSpiMap(mockConf.getCompile()) : mockCompile;
+    @Override
+    public void onApplicationEvent(@Nullable ApplicationReadyEvent event) {
+        mockCompile = compileManager.getSpiMap(mockConf.getCompile(), event);
     }
 
 
@@ -59,7 +56,7 @@ public final class MockNettyClient implements MockClient {
         req.setUuid(uuid);
         req.setOpt(OptType.MOCK);
         req.setRoute(this.getMockUrl(url));
-        req.setData(this.getMockCompile().decode(paras));
+        req.setData(mockCompile.decode(paras));
         future.sendMsg(req);
 
         try {
@@ -68,7 +65,7 @@ public final class MockNettyClient implements MockClient {
                 throw new MockException("mockNettyClient timeout");
             }
 
-            return this.resolveRes((String) this.getMockCompile().encode(resp), returnClazz);
+            return this.resolveRes((String) mockCompile.encode(resp), returnClazz);
         } catch (MockException e) {
             throw e;
         } catch (Exception e) {
