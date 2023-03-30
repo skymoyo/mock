@@ -74,7 +74,7 @@ public class MockHttpClient implements MockClient {
             req.setUuid(UUID.randomUUID().toString());
             req.setOpt(OptType.MOCK);
             req.setRoute(url);
-            req.setData(this.getMockCompile().encode(paras));
+            req.setData(this.getMockCompile().decode(paras));
 
             log.info("[{}]mockHttpClient req[{}]", url, JSON.toJSONString(req));
 
@@ -91,7 +91,7 @@ public class MockHttpClient implements MockClient {
             String res = EntityUtils.toString(response.getEntity());
             log.info("mockHttpClient res:{}", res);
 
-            return this.resolveRes((String) this.getMockCompile().decode(res), returnClazz);
+            return this.resolveRes((String) this.getMockCompile().encode(res), returnClazz);
 
         } catch (Exception e) {
             log.error("mockHttpClient error：{}", e.getMessage(), e);

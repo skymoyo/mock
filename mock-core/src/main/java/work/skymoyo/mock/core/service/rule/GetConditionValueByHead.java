@@ -19,14 +19,14 @@ import work.skymoyo.mock.core.resource.entity.MockCondition;
 @GetConditionValue(GetConditionValueType.HEAD)
 public class GetConditionValueByHead implements MockConditionService<Object> {
 
-    public Object mockConditionValue(MockReq<Object> req, MockCondition mockCondition) {
+    public String mockConditionValue(MockReq<Object> req, MockCondition mockCondition) {
 
         ExpressionParser parser = new SpelExpressionParser();
         Object object = new Object();
         EvaluationContext ctx = new StandardEvaluationContext(object);
         ctx.setVariable("datas", req.getHead());
         try {
-            return parser.parseExpression("#datas" + mockCondition.getConditionKey()).getValue(ctx);
+            return parser.parseExpression("#datas" + mockCondition.getConditionKey()).getValue(ctx, String.class);
         } catch (EvaluationException e) {
             log.warn("解析异常[{}]", e.getMessage(), e);
             return null;

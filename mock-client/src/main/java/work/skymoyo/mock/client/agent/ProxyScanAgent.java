@@ -18,8 +18,13 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @Slf4j
 public class ProxyScanAgent implements Agent {
 
-    private static final String SCAN_PATH = "classpath:MockAgent";
+    private static String SCAN_PATH;
 
+    static {
+        SCAN_PATH = Optional.ofNullable(System.getProperty("mock.proxy.file"))
+                .filter(StringUtils::hasLength)
+                .orElse("classpath:MockAgent");
+    }
 
     private static List<String> DEF = new ArrayList<>(0);
 

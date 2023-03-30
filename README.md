@@ -6,6 +6,16 @@
 
 # 版本升级
 
+## 0.0.3
+ 
+**feature:**
+- ProxyScanAgent  通过 mock.proxy.file 配置取文件，未配置取 classpath:MockAgent
+- 优化了部分代码
+
+**fix:**
+ - [RpcManager 导致 OOM](https://gitee.com/skymoyo/mock/issues/I5YAUG)   
+ - 通讯client 发送时 应该调用解密方法，而非加密
+
 ## 0.0.2
  
 **feature:**

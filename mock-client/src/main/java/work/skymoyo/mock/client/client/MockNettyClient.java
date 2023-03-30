@@ -59,7 +59,7 @@ public final class MockNettyClient implements MockClient {
         req.setUuid(uuid);
         req.setOpt(OptType.MOCK);
         req.setRoute(this.getMockUrl(url));
-        req.setData(this.getMockCompile().encode(paras));
+        req.setData(this.getMockCompile().decode(paras));
         future.sendMsg(req);
 
         try {
@@ -68,7 +68,7 @@ public final class MockNettyClient implements MockClient {
                 throw new MockException("mockNettyClient timeout");
             }
 
-            return this.resolveRes((String) this.getMockCompile().decode(resp), returnClazz);
+            return this.resolveRes((String) this.getMockCompile().encode(resp), returnClazz);
         } catch (MockException e) {
             throw e;
         } catch (Exception e) {

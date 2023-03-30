@@ -13,7 +13,7 @@
     <artifactId>mock-client</artifactId>
     <name>mock-client</name>
     <version>${mock.version}</version>
-    <description>mock加解密</description>
+    <description>mock客户端</description>
 
     <dependencies>
         <dependency>
