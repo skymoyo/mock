@@ -117,7 +117,9 @@ public class ProxyScanAgent implements Agent {
 
             method.insertBefore("try{"
                     + "if(work.skymoyo.mock.client.utils.MockContextUtil.isEnableMock()){"
-                    + " Object obj  =  work.skymoyo.mock.client.utils.MethodMockUtil.proxyInvoker(\"" + methodKey + "\", $type, $args);"
+                    + " java.lang.reflect.Type type = work.skymoyo.mock.client.utils.BeanMockUtil.getReturnType(work.skymoyo.mock.client.utils.BeanMockUtil.getMethod($class,\"" + method.getName() + "\",$sig));"
+//                    + " java.lang.reflect.Type type = $class.getMethod(\"" + method.getName() + "\",$sig).getGenericReturnType();"
+                    + " Object obj  =  work.skymoyo.mock.client.utils.MethodMockUtil.proxyInvoker(\"" + methodKey + "\", type, $args);"
                     + " return (" + returnType + ") obj;"
                     + "  }"
                     + "} catch (Throwable ignored){"

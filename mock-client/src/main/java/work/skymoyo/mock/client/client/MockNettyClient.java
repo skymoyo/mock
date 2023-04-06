@@ -19,6 +19,7 @@ import work.skymoyo.mock.rpc.netty.ClientInitializer;
 import work.skymoyo.mock.rpc.netty.RpcFuture;
 import work.skymoyo.mock.rpc.netty.RpcManager;
 
+import java.lang.reflect.Type;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -45,7 +46,7 @@ public final class MockNettyClient implements MockClient, ApplicationListener<Ap
 
 
     @Override
-    public <R> R doMock(Class<R> returnClazz, String url, boolean isRpc, Object... paras) {
+    public <R> R doMock(Type type, String url, boolean isRpc, Object... paras) {
 
         String uuid = UUID.randomUUID().toString();
 
@@ -65,7 +66,7 @@ public final class MockNettyClient implements MockClient, ApplicationListener<Ap
                 throw new MockException("mockNettyClient timeout");
             }
 
-            return this.resolveRes((String) mockCompile.encode(resp), returnClazz);
+            return this.resolveRes((String) mockCompile.encode(resp), type);
         } catch (MockException e) {
             throw e;
         } catch (Exception e) {

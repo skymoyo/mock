@@ -15,7 +15,9 @@
 **fix:**
  - [RpcManager 导致 OOM](https://gitee.com/skymoyo/mock/issues/I5YAUG)   
  - 通讯client 发送时 应该调用解密方法，而非加密
-
+ -  代理 方法 返回List\<POJO\> 解析异常
+ 
+ 
 ## 0.0.2
  
 **feature:**

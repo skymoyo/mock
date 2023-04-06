@@ -24,6 +24,7 @@ import work.skymoyo.mock.common.model.MockReq;
 import work.skymoyo.mock.rpc.config.MockConf;
 import work.skymoyo.mock.rpc.netty.ClientInitializer;
 
+import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.util.UUID;
 
@@ -53,7 +54,7 @@ public class MockHttpClient implements MockClient, ApplicationListener<Applicati
     }
 
     @Override
-    public <R> R doMock(Class<R> returnClazz, String url, boolean isRpc, Object... paras) {
+    public <R> R doMock(Type type, String url, boolean isRpc, Object... paras) {
 
         if (isRpc) {
             url = getMockUrl(url);
@@ -89,7 +90,7 @@ public class MockHttpClient implements MockClient, ApplicationListener<Applicati
             String res = EntityUtils.toString(response.getEntity());
             log.info("mockHttpClient res:{}", res);
 
-            return this.resolveRes((String) mockCompile.encode(res), returnClazz);
+            return this.resolveRes((String) mockCompile.encode(res), type);
 
         } catch (Exception e) {
             log.error("mockHttpClient error：{}", e.getMessage(), e);

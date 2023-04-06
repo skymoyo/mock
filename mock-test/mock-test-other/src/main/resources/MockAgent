@@ -1,3 +1,4 @@
 
 ## 代理TestService  helloSpi 方法
 work.skymoyo.test.service.TestService#helloSpi
+work.skymoyo.test.service.TestService#getPerson
