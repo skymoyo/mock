@@ -1,3 +1,5 @@
+CREATE DATABASE `mock` CHARACTER SET 'utf8'
+
 DROP TABLE  IF EXISTS mock_config;
 CREATE TABLE `mock_config` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
