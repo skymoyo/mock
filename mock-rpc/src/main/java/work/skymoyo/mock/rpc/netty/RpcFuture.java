@@ -5,20 +5,19 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
 import work.skymoyo.mock.common.model.MockReq;
+import work.skymoyo.mock.common.model.MockResp;
 
 import java.util.concurrent.*;
 
 /**
  * netty异步转同步
- *
- * @param <T>
  */
 @Slf4j
-public class RpcFuture<T> implements Future<T> {
+public class RpcFuture<Q, R> implements Future<MockResp<R>> {
 
     private CountDownLatch latch = new CountDownLatch(1);
 
-    private T response;
+    private MockResp<R> response;
 
     private Channel channel;
 
@@ -26,13 +25,13 @@ public class RpcFuture<T> implements Future<T> {
         this.channel = channel;
     }
 
-    public void sendMsg(MockReq<T> req) {
+    public void sendMsg(MockReq<Q> req) {
         log.info("mock客户端发送消息：{}", JSON.toJSONString(req, SerializerFeature.PrettyFormat));
         channel.writeAndFlush(req);
     }
 
     // 用于设置响应结果，并且做countDown操作，通知请求线程
-    public void setResponse(T response) {
+    public void setResponse(MockResp<R> response) {
         this.response = response;
         latch.countDown();
     }
@@ -44,13 +43,13 @@ public class RpcFuture<T> implements Future<T> {
     }
 
     @Override
-    public T get() throws InterruptedException, ExecutionException {
+    public MockResp<R> get() throws InterruptedException, ExecutionException {
         latch.await();
         return this.response;
     }
 
     @Override
-    public T get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+    public MockResp<R> get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
         if (latch.await(timeout, unit)) {
             return this.response;
         }

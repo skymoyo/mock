@@ -25,6 +25,15 @@
         <mock.version>0.0.2</mock.version>
     </properties>
 
+    <modules>
+        <module>mock-agent</module>
+        <module>mock-common</module>
+        <module>mock-rpc</module>
+        <module>mock-client</module>
+        <module>mock-core</module>
+    </modules>
+
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>

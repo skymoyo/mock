@@ -15,15 +15,15 @@ import work.skymoyo.mock.rpc.netty.RpcManager;
 @Slf4j
 @Component
 @ChannelHandler.Sharable
-public class RespHandler extends SimpleChannelInboundHandler<MockResp> {
+public class RespHandler extends SimpleChannelInboundHandler<MockResp<Object>> {
 
     @Autowired
     private RpcManager rpcManager;
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, MockResp resp) {
+    protected void channelRead0(ChannelHandlerContext ctx, MockResp<Object> resp) {
         log.info("mock客户端收到消息: [{}]", JSON.toJSONString(resp, SerializerFeature.PrettyFormat));
-        rpcManager.setResp(resp.getUuid(), resp.getData());
+        rpcManager.setResp(resp.getUuid(), resp);
     }
 
 

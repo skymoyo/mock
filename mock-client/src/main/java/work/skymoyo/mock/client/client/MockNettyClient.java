@@ -13,6 +13,7 @@ import work.skymoyo.mock.client.spi.MockCompile;
 import work.skymoyo.mock.common.enums.OptType;
 import work.skymoyo.mock.common.exception.MockException;
 import work.skymoyo.mock.common.model.MockReq;
+import work.skymoyo.mock.common.model.MockResp;
 import work.skymoyo.mock.rpc.config.MockConf;
 import work.skymoyo.mock.rpc.netty.ChannelManager;
 import work.skymoyo.mock.rpc.netty.ClientInitializer;
@@ -50,7 +51,7 @@ public final class MockNettyClient implements MockClient, ApplicationListener<Ap
 
         String uuid = UUID.randomUUID().toString();
 
-        RpcFuture<Object> future = new RpcFuture<>(channelManager.getChannel());
+        RpcFuture<Object, Object> future = new RpcFuture<>(channelManager.getChannel());
         rpcManager.add(uuid, future);
 
         MockReq<Object> req = new MockReq<>();
@@ -61,12 +62,15 @@ public final class MockNettyClient implements MockClient, ApplicationListener<Ap
         future.sendMsg(req);
 
         try {
-            Object resp = future.get(10, TimeUnit.SECONDS);
+            MockResp<Object> resp = future.get(10, TimeUnit.SECONDS);
             if (resp == null) {
                 throw new MockException("mockNettyClient timeout");
             }
+            if (!resp.isSuccess()) {
+                throw new MockException(resp.getMsg());
+            }
 
-            return this.resolveRes((String) mockCompile.encode(resp), type);
+            return this.resolveRes((String) mockCompile.encode(resp.getData()), type);
         } catch (MockException e) {
             throw e;
         } catch (Exception e) {

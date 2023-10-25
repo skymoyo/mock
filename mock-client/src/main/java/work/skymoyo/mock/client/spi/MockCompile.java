@@ -12,10 +12,10 @@ public interface MockCompile {
      * <p>
      * 此处会把mock服务端返回加密返回，
      *
-     * @param o
+     * @param resp
      * @return
      */
-    Object encode(Object o);
+    Object encode(Object resp);
 
 
     /**
@@ -23,9 +23,9 @@ public interface MockCompile {
      * <p>
      * 此处会把mock客户端加密报文解密后发送，
      *
-     * @param o
+     * @param req
      * @return
      */
-    Object decode(Object o);
+    Object decode(Object req);
 
 }

@@ -1,17 +1,20 @@
 package work.skymoyo.test.controller;
 
-import org.springframework.stereotype.Service;
 import work.skymoyo.mock.client.spi.MockCompile;
 import work.skymoyo.mock.common.spi.Spi;
+import work.skymoyo.test.utils.AesUtil;
+
+import java.util.Arrays;
 
 @Spi("testSpi")
-@Service
 public class TestSpi implements MockCompile {
+
+
     public Object encode(Object o) {
-        return null;
+        return AesUtil.encryptHex((String) o);
     }
 
     public Object decode(Object o) {
-        return null;
+        return Arrays.stream(((Object[]) o)).map(s -> AesUtil.decryptStr((String) s)).toArray();
     }
 }
