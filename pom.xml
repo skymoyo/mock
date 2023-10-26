@@ -22,8 +22,17 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <java.version>1.8</java.version>
-        <mock.version>0.0.2</mock.version>
+        <mock.version>0.0.3</mock.version>
     </properties>
+
+    <modules>
+        <module>mock-agent</module>
+        <module>mock-common</module>
+        <module>mock-rpc</module>
+        <module>mock-client</module>
+        <module>mock-core</module>
+    </modules>
+
 
     <dependencies>
         <dependency>

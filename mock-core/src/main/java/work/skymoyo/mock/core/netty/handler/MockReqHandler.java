@@ -34,6 +34,7 @@ public class MockReqHandler extends SimpleChannelInboundHandler<MockReq<Object>>
         mockContext.setLocalMockReq(req);
 
         MockResp<Object> resp = new MockResp<>();
+        resp.setSuccess(true);
         resp.setUuid(req.getUuid());
         resp.setData(mockService.mock(req));
 
@@ -55,6 +56,7 @@ public class MockReqHandler extends SimpleChannelInboundHandler<MockReq<Object>>
         }
 
         MockResp resp = new MockResp<>();
+        resp.setSuccess(false);
         resp.setUuid(req.getUuid());
         resp.setMsg(cause.getMessage());
 

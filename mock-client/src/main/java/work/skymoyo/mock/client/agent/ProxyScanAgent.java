@@ -18,8 +18,13 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @Slf4j
 public class ProxyScanAgent implements Agent {
 
-    private static final String SCAN_PATH = "classpath:MockAgent";
+    private static String SCAN_PATH;
 
+    static {
+        SCAN_PATH = Optional.ofNullable(System.getProperty("mock.proxy.file"))
+                .filter(StringUtils::hasLength)
+                .orElse("classpath:MockAgent");
+    }
 
     private static List<String> DEF = new ArrayList<>(0);
 
@@ -112,7 +117,9 @@ public class ProxyScanAgent implements Agent {
 
             method.insertBefore("try{"
                     + "if(work.skymoyo.mock.client.utils.MockContextUtil.isEnableMock()){"
-                    + " Object obj  =  work.skymoyo.mock.client.utils.MethodMockUtil.proxyInvoker(\"" + methodKey + "\", $type, $args);"
+                    + " java.lang.reflect.Type type = work.skymoyo.mock.client.utils.BeanMockUtil.getReturnType(work.skymoyo.mock.client.utils.BeanMockUtil.getMethod($class,\"" + method.getName() + "\",$sig));"
+//                    + " java.lang.reflect.Type type = $class.getMethod(\"" + method.getName() + "\",$sig).getGenericReturnType();"
+                    + " Object obj  =  work.skymoyo.mock.client.utils.MethodMockUtil.proxyInvoker(\"" + methodKey + "\", type, $args);"
                     + " return (" + returnType + ") obj;"
                     + "  }"
                     + "} catch (Throwable ignored){"

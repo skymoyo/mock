@@ -2,8 +2,8 @@ package work.skymoyo.mock.core.resource.entity;
 
 import lombok.Data;
 
-import java.util.Date;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * mock配置表(MockRule)实体类
@@ -33,7 +33,7 @@ public class MockRule implements Serializable {
     /**
      * 结果生成类型 10 直接返回 20 动态生成
      */
-    private Object ruleType;
+    private String ruleType;
     /**
      * 返回结果
      */

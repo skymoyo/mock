@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import work.skymoyo.mock.client.client.MockNettyClient;
+import work.skymoyo.test.model.Person;
 import work.skymoyo.test.service.TestService;
+import work.skymoyo.test.utils.AesUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,6 +46,19 @@ public class TestController {
     @GetMapping(value = "/proxy/{hello}", produces = {"application/json"})
     public Object proxy(@PathVariable("hello") String hello) {
         return testService.helloSpi(hello);
+    }
+
+
+    @GetMapping(value = "/getPerson/{hello}", produces = {"application/json"})
+    public List<Person> getPerson(@PathVariable("hello") String hello) {
+
+        return testService.getPersonByAes(hello);
+
+    }
+
+    @GetMapping(value = "/getPerson", produces = {"application/json"})
+    public Person getPerson() {
+        return testService.getPerson();
     }
 
 

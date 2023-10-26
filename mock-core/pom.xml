@@ -6,12 +6,12 @@
         <groupId>work.skymoyo</groupId>
         <artifactId>mock</artifactId>
         <version>0.0.1</version>
-        <relativePath/>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>mock-core</artifactId>
     <name>mock-core</name>
-    <version>${mock.version}</version>
+    <version>0.0.3</version>
     <description>mock核心</description>
 
 

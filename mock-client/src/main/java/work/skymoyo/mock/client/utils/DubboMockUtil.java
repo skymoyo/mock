@@ -47,9 +47,9 @@ public class DubboMockUtil {
         try {
             if (MockContextUtil.isEnableMock()) {
                 log.info("mock-agent 接口");
-                String methodKey = DubboMockUtil.getMethodKey(method);
+                String methodKey = BeanMockUtil.getMethodKey(method);
 
-                return MethodMockUtil.proxyInvoker(methodKey, method.getReturnType(), args);
+                return MethodMockUtil.proxyInvoker(methodKey, method.getGenericReturnType(), args);
             }
 
         } catch (Throwable e) {
@@ -60,10 +60,6 @@ public class DubboMockUtil {
 
     }
 
-
-    public static String getMethodKey(Method sourceMethod) {
-        return sourceMethod.getDeclaringClass().getName() + "#" + sourceMethod.getName();
-    }
 
     /**
      * 无法通过 ReferenceConfig 获取引用 时

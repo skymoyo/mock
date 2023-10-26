@@ -27,7 +27,7 @@ public class MockAgent {
 
             log.debug("mock agent end");
         } catch (Throwable e) {
-            log.debug("mock agent error :{}", e.getMessage(), e);
+            //ignore
         }
     }
 

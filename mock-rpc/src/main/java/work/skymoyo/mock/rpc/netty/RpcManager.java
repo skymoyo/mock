@@ -1,6 +1,7 @@
 package work.skymoyo.mock.rpc.netty;
 
 import org.springframework.stereotype.Component;
+import work.skymoyo.mock.common.model.MockResp;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -11,16 +12,20 @@ import java.util.concurrent.ConcurrentMap;
 @Component
 public class RpcManager {
 
-    private static final ConcurrentMap<String, RpcFuture> holder = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<String, RpcFuture<Object, Object>> HOLDER = new ConcurrentHashMap<>();
 
 
-    public void add(String uuid, RpcFuture rpcFuture) {
-        holder.put(uuid, rpcFuture);
+    public void add(String uuid, RpcFuture<Object, Object> rpcFuture) {
+        HOLDER.put(uuid, rpcFuture);
     }
 
 
-    public void setResp(String uuid, Object resp) {
-        holder.get(uuid).setResponse(resp);
+    public void setResp(String uuid, MockResp<Object> resp) {
+        RpcFuture<Object, Object> rpcFuture = HOLDER.get(uuid);
+        if (rpcFuture != null) {
+            rpcFuture.setResponse(resp);
+            HOLDER.remove(uuid);
+        }
     }
 
 }

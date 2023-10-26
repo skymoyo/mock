@@ -20,7 +20,7 @@ public class OptServiceByMockImpl implements OptService<Object, String> {
     @Override
     public MockResp<String> exec(MockReq<Object> req) {
 
-        MockResp resp = new MockResp<>();
+        MockResp<String> resp = new MockResp<>();
         resp.setUuid(req.getUuid());
         resp.setData(mockService.mock(req));
         return resp;

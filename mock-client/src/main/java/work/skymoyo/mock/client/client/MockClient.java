@@ -3,6 +3,8 @@ package work.skymoyo.mock.client.client;
 import com.alibaba.fastjson.JSON;
 import org.springframework.util.StringUtils;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 
 public interface MockClient {
@@ -22,7 +24,16 @@ public interface MockClient {
     }
 
     //todo 这里不太合适
-    default <T> T resolveRes(String res, Class<T> clazz) {
+    default <T> T resolveRes(String res, Type type) {
+
+        Class clazz;
+
+        if (type instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType) type;
+            clazz = (Class) parameterizedType.getRawType();
+        } else {
+            clazz = (Class) type;
+        }
 
         if (clazz.equals(void.class) || clazz.equals(Void.class)) {
             return (T) "";
@@ -47,19 +58,19 @@ public interface MockClient {
             return (T) res;
         }
 
-        return JSON.parseObject(res, clazz);
+        return (T) JSON.parseObject(res, type);
     }
 
 
     /**
      * 执行mock
      *
-     * @param returnClazz 返回类型
-     * @param url         执行url 或者rpc 类限定名
-     * @param isRpc       是否是rpc
-     * @param paras       请求参数
+     * @param type  返回类型
+     * @param url   执行url 或者rpc 类限定名
+     * @param isRpc 是否是rpc
+     * @param paras 请求参数
      * @return
      */
-    <R> R doMock(Class<R> returnClazz, String url, boolean isRpc, Object... paras);
+    <R> R doMock(Type type, String url, boolean isRpc, Object... paras);
 
 }

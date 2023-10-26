@@ -5,6 +5,8 @@ import lombok.Data;
 @Data
 public class MockResp<T> extends BaseObject {
 
+    private boolean success;
+
     private String uuid;
 
     private String msg;

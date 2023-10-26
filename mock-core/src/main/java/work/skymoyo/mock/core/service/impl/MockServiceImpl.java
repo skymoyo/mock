@@ -39,8 +39,8 @@ public class MockServiceImpl implements MockService {
     public String mock(MockReq<Object> req) {
 
         String route = req.getRoute();
-
-        MockConfig config = mockConfigDao.queryByRoute(route);
+        String realRoute = route.replace("/mock", "").replace("mock", "");
+        MockConfig config = mockConfigDao.queryByRoute(realRoute);
         if (config == null) {
             throw new MockException("定义配置信息为空");
         }
@@ -62,11 +62,11 @@ public class MockServiceImpl implements MockService {
 
             boolean isSend = true;
             for (MockCondition mockCondition : mockConditionList) {
-                MockConditionService mockConditionService = getConditionValueManager.selectorGetCondition(mockCondition.getConditionType());
-                Object mock = mockConditionService.mockConditionValue(req, mockCondition);
+                MockConditionService<Object> mockConditionService = getConditionValueManager.selectorGetCondition(mockCondition.getConditionType());
+                String mock = mockConditionService.mockConditionValue(req, mockCondition);
                 String conditionValue = mockCondition.getConditionValue();
 
-                isSend = Objects.equals(String.valueOf(mock), conditionValue);
+                isSend = Objects.equals(mock, conditionValue);
                 log.info("当前获取值[{}],配置[{}]，对比结果[{}]", mock, conditionValue, isSend);
                 if (!isSend) {
                     break;
