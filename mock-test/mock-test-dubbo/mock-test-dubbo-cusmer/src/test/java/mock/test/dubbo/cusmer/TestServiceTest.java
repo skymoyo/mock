@@ -33,14 +33,14 @@ public class TestServiceTest {
     @Test
     public void helloMock() {
 
-//        TestService first = this.getService("", TestService.class);
-//        logger.info("返回String：{}", first.helloString("foo"));
-//        logger.info("返回Integer：{}", first.helloInteger(18));
-//        logger.info("返回int：{}", first.helloInt(1));
-//
-//        TestService second = this.getService("", TestService.class);
-//        logger.info("返回list：{}", second.helloList("mock list", 3));
-//        logger.info("返回map：{}", second.helloMap(2, new TestModel(1, "mock Map", "")));
+        TestService first = this.getService("", TestService.class);
+        logger.info("返回String：{}", first.helloString("foo"));
+        logger.info("返回Integer：{}", first.helloInteger(18));
+        logger.info("返回int：{}", first.helloInt(1));
+
+        TestService second = this.getService("", TestService.class);
+        logger.info("返回list：{}", second.helloList("mock list", 3));
+        logger.info("返回map：{}", second.helloMap(2, new TestModel(1, "mock Map", "")));
 
         logger.info("返回Object：{}", this.testService.helloObject(2, "我是对象"));
         logger.info("重载返回Object：{}", this.testService.helloObject(2, "foo", "重载"));

@@ -13,7 +13,7 @@ import java.util.concurrent.*;
  * netty异步转同步
  */
 @Slf4j
-public class RpcFuture<Q, R> implements Future<MockResp<R>> {
+public class RpcFuture<R> implements Future<MockResp<R>> {
 
     private CountDownLatch latch = new CountDownLatch(1);
 
@@ -25,7 +25,7 @@ public class RpcFuture<Q, R> implements Future<MockResp<R>> {
         this.channel = channel;
     }
 
-    public void sendMsg(MockReq<Q> req) {
+    public void sendMsg(MockReq req) {
         log.info("mock客户端发送消息：{}", JSON.toJSONString(req, SerializerFeature.PrettyFormat));
         channel.writeAndFlush(req);
     }

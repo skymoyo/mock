@@ -26,6 +26,7 @@ import work.skymoyo.mock.rpc.netty.ClientInitializer;
 
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
+import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
@@ -54,12 +55,12 @@ public class MockHttpClient implements MockClient, ApplicationListener<Applicati
     }
 
     @Override
-    public <R> R doMock(Type type, String url, boolean isRpc, Object... paras) {
+    public <R> R doMock(Type type, String url, Map<String, Object> paras, boolean isRpc) {
+
 
         if (isRpc) {
             url = getMockUrl(url);
         }
-
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpPost httpPost = new HttpPost(mockConf.getHost() + ":" + mockConf.getPort() + mockConf.getPrefix() + url);
@@ -69,7 +70,7 @@ public class MockHttpClient implements MockClient, ApplicationListener<Applicati
             httpPost.addHeader("Content-type", "application/json;charset=utf-8");
             httpPost.setHeader("Accept", "application/json");
 
-            MockReq<Object> req = new MockReq<>();
+            MockReq req = new MockReq();
             req.setUuid(UUID.randomUUID().toString());
             req.setOpt(OptType.MOCK);
             req.setRoute(url);

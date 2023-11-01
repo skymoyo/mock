@@ -154,5 +154,12 @@
         delete from mock_rule where id = #{id}
     </delete>
 
+
+    <select id="queryResultById" resultType="java.lang.String">
+       select rule_result
+        from mock_rule
+        where id = #{id}
+    </select>
+
 </mapper>
 

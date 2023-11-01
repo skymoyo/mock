@@ -13,6 +13,7 @@ import java.util.Map;
 
 @Slf4j
 @Component
+@Deprecated
 public class GetConditionValueManager implements ApplicationListener<ApplicationReadyEvent> {
 
     private final Map<String, Object> getConditionBeanMap = new HashMap<>(GetConditionValueType.values().length);

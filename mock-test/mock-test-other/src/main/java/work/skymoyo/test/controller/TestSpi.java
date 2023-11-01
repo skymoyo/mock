@@ -4,7 +4,8 @@ import work.skymoyo.mock.client.spi.MockCompile;
 import work.skymoyo.mock.common.spi.Spi;
 import work.skymoyo.test.utils.AesUtil;
 
-import java.util.Arrays;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Spi("testSpi")
 public class TestSpi implements MockCompile {
@@ -14,7 +15,13 @@ public class TestSpi implements MockCompile {
         return AesUtil.encryptHex((String) o);
     }
 
-    public Object decode(Object o) {
-        return Arrays.stream(((Object[]) o)).map(s -> AesUtil.decryptStr((String) s)).toArray();
+    public Map<String, Object> decode(Map<String, Object> map) {
+        return map.entrySet()
+                .stream()
+                .peek(e -> {
+                    Object value = e.getValue();
+                    e.setValue(AesUtil.decryptStr((String) value));
+                }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
     }
 }

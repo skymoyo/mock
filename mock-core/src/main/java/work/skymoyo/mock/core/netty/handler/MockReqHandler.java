@@ -19,7 +19,7 @@ import java.util.Objects;
 @Slf4j
 @Component
 @ChannelHandler.Sharable
-public class MockReqHandler extends SimpleChannelInboundHandler<MockReq<Object>> {
+public class MockReqHandler extends SimpleChannelInboundHandler<MockReq> {
 
     @Autowired
     private MockService mockService;
@@ -28,7 +28,7 @@ public class MockReqHandler extends SimpleChannelInboundHandler<MockReq<Object>>
     private MockContext mockContext;
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, MockReq<Object> req) {
+    protected void channelRead0(ChannelHandlerContext ctx, MockReq req) {
         log.info("mock服务端接收到消息{}", JSON.toJSONString(req, SerializerFeature.PrettyFormat));
 
         mockContext.setLocalMockReq(req);

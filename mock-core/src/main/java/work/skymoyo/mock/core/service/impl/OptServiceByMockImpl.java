@@ -11,14 +11,14 @@ import work.skymoyo.mock.core.service.OptService;
 
 @Slf4j
 @Service
-public class OptServiceByMockImpl implements OptService<Object, String> {
+public class OptServiceByMockImpl implements OptService<String> {
 
     @Autowired
     private MockService mockService;
 
 
     @Override
-    public MockResp<String> exec(MockReq<Object> req) {
+    public MockResp<String> exec(MockReq req) {
 
         MockResp<String> resp = new MockResp<>();
         resp.setUuid(req.getUuid());

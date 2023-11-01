@@ -17,9 +17,9 @@ import work.skymoyo.mock.core.resource.entity.MockCondition;
  */
 @Slf4j
 @GetConditionValue(GetConditionValueType.HEAD)
-public class GetConditionValueByHead implements MockConditionService<Object> {
+public class GetConditionValueByHead implements MockConditionService {
 
-    public String mockConditionValue(MockReq<Object> req, MockCondition mockCondition) {
+    public String mockConditionValue(MockReq req, MockCondition mockCondition) {
 
         ExpressionParser parser = new SpelExpressionParser();
         Object object = new Object();

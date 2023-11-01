@@ -59,7 +59,7 @@ public interface MockService {
     }
 
 
-    String mock(MockReq<Object> req);
+    String mock(MockReq req);
 
     String mockHttp(HttpServletRequest request, HttpServletResponse response);
 

@@ -1,5 +1,7 @@
 package work.skymoyo.mock.client.spi;
 
+import java.util.Map;
+
 /**
  * 由于在应用程序里面可能有加解密
  * 此处预留SPI
@@ -26,6 +28,6 @@ public interface MockCompile {
      * @param req
      * @return
      */
-    Object decode(Object req);
+    Map<String, Object> decode(Map<String, Object> req);
 
 }

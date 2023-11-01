@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import work.skymoyo.mock.common.enums.MockHandleTypeEnum;
 import work.skymoyo.mock.common.enums.OptType;
 import work.skymoyo.mock.common.exception.MockException;
 import work.skymoyo.mock.common.model.MockReq;
@@ -16,6 +17,8 @@ import work.skymoyo.mock.core.resource.entity.MockRule;
 import work.skymoyo.mock.core.service.MockService;
 import work.skymoyo.mock.core.service.rule.GetConditionValueManager;
 import work.skymoyo.mock.core.service.rule.MockConditionService;
+import work.skymoyo.mock.core.service.rule.MockHandleManager;
+import work.skymoyo.mock.core.service.rule.MockResultService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,9 +37,11 @@ public class MockServiceImpl implements MockService {
     private MockConditionDao mockConditionDao;
     @Autowired
     private GetConditionValueManager getConditionValueManager;
+    @Autowired
+    private MockHandleManager mockHandleManager;
 
     @Override
-    public String mock(MockReq<Object> req) {
+    public String mock(MockReq req) {
 
         String route = req.getRoute();
         String realRoute = route.replace("/mock", "").replace("mock", "");
@@ -62,7 +67,7 @@ public class MockServiceImpl implements MockService {
 
             boolean isSend = true;
             for (MockCondition mockCondition : mockConditionList) {
-                MockConditionService<Object> mockConditionService = getConditionValueManager.selectorGetCondition(mockCondition.getConditionType());
+                MockConditionService mockConditionService = getConditionValueManager.selectorGetCondition(mockCondition.getConditionType());
                 String mock = mockConditionService.mockConditionValue(req, mockCondition);
                 String conditionValue = mockCondition.getConditionValue();
 
@@ -74,7 +79,8 @@ public class MockServiceImpl implements MockService {
             }
 
             if (isSend) {
-                return mockRuleDao.queryById(mockRule.getId()).getRuleResult();
+                MockResultService mockResultService = mockHandleManager.selectorHandle(MockHandleTypeEnum.RESP, mockRule.getRuleType(), MockResultService.class);
+                return mockResultService.getResult(req, mockRule);
             }
         }
 
@@ -84,7 +90,7 @@ public class MockServiceImpl implements MockService {
     @Override
     public String mockHttp(HttpServletRequest request, HttpServletResponse response) {
         log.info("http接口请求");
-        MockReq<Object> req = new MockReq<>();
+        MockReq req = new MockReq();
 
         req.setRoute(request.getServletPath().replace("/mock", "").replace("mock", ""));
         req.setHead(this.getReqHead(request));

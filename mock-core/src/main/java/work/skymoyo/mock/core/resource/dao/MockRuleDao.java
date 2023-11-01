@@ -93,5 +93,12 @@ public interface MockRuleDao {
      */
     int deleteById(Long id);
 
+    /**
+     * 查询返回结果
+     *
+     * @param id
+     * @return
+     */
+    String queryResultById(Long id);
 }
 

@@ -21,6 +21,7 @@ import work.skymoyo.mock.rpc.netty.RpcFuture;
 import work.skymoyo.mock.rpc.netty.RpcManager;
 
 import java.lang.reflect.Type;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -47,14 +48,14 @@ public final class MockNettyClient implements MockClient, ApplicationListener<Ap
 
 
     @Override
-    public <R> R doMock(Type type, String url, boolean isRpc, Object... paras) {
+    public <R> R doMock(Type type, String url, Map<String, Object> paras, boolean isRpc) {
 
         String uuid = UUID.randomUUID().toString();
 
-        RpcFuture<Object, Object> future = new RpcFuture<>(channelManager.getChannel());
+        RpcFuture<Object> future = new RpcFuture<>(channelManager.getChannel());
         rpcManager.add(uuid, future);
 
-        MockReq<Object> req = new MockReq<>();
+        MockReq req = new MockReq();
         req.setUuid(uuid);
         req.setOpt(OptType.MOCK);
         req.setRoute(this.getMockUrl(url));

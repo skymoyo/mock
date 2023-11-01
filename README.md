@@ -5,7 +5,15 @@
  - classpath:MockAgent 指定需要代理的方法
 
 # 版本升级
+## 0.1.0
+**feature:**
+ - 返回报文支持spel替换文本
 
+**notice**
+- 不兼容之前版本
+- 代理 interface 接口是参数无法获取正确的参数名称，只能获取到名称 arg0 arg1...
+
+ 
 ## 0.0.3
  
 **feature:**

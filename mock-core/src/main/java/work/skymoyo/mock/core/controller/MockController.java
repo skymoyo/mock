@@ -20,7 +20,7 @@ public class MockController {
     private MockService mockService;
 
     @RequestMapping(value = "/allReq/**", method = {RequestMethod.GET, RequestMethod.POST})
-    public Object mock(@RequestBody MockReq<Object> req) {
+    public Object mock(@RequestBody MockReq req) {
         return mockService.mock(req);
     }
 
