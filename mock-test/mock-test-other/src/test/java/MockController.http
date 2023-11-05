@@ -9,3 +9,27 @@ Accept: application/json
 Content-Type: application/json;charset=UTF-8
 
 ###
+
+
+POST http://127.0.0.1:8080/test/spelResp
+Accept: application/json
+Content-Type: application/json;charset=UTF-8
+
+{
+  "name": "哈哈",
+  "age": 12,
+  "childs": [
+    {
+      "name": "哈哈1",
+      "age": 123211,
+      "childs": null
+    },
+    {
+      "name": "哈哈21312",
+      "age": 2,
+      "childs": null
+    }
+  ]
+}
+
+###

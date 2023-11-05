@@ -1,10 +1,7 @@
 package work.skymoyo.test.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import work.skymoyo.mock.client.client.MockNettyClient;
 import work.skymoyo.test.model.Person;
 import work.skymoyo.test.service.TestService;
@@ -50,6 +47,12 @@ public class TestController {
     @GetMapping(value = "/getPerson", produces = {"application/json"})
     public Person getPerson() {
         return testService.getPerson();
+    }
+
+
+    @PostMapping(value = "/spelResp", produces = {"application/json"})
+    public Person spelResp(@RequestBody Person person) {
+        return testService.spelResp(person);
     }
 
 

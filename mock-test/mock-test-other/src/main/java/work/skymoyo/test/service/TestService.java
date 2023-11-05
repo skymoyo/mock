@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import work.skymoyo.test.model.Person;
-import work.skymoyo.test.utils.AesUtil;
 
 import java.util.List;
 
@@ -31,5 +30,9 @@ public class TestService {
 //        String text = AesUtil.decryptStr(person);
         String person = remoteTestService.getPerson(hello);
         return JSON.parseArray(person, Person.class);
+    }
+
+    public Person spelResp(Person person) {
+        return remoteTestService.spelResp(person);
     }
 }

@@ -3,3 +3,4 @@
 work.skymoyo.test.service.TestService#helloSpi
 work.skymoyo.test.service.TestService#getPerson
 work.skymoyo.test.service.RemoteTestService#getPerson
+work.skymoyo.test.service.RemoteTestService#spelResp
