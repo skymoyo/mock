@@ -9,10 +9,6 @@ import work.skymoyo.mock.core.resource.dao.MockRuleDao;
 import work.skymoyo.mock.core.resource.entity.MockRule;
 
 
-/**
- * alter table mock_rule modify rule_type varchar(8) not null comment '结果生成类型 10 直接返回 20 动态生成';
- */
-
 @Spi("RESP_SPI")
 @Slf4j
 @Service
