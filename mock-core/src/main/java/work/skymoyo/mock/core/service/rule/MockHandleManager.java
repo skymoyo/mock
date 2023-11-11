@@ -18,7 +18,6 @@ import work.skymoyo.mock.core.annotation.MockHandle;
 import work.skymoyo.mock.core.service.MockHandleInterface;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -48,7 +47,7 @@ public class MockHandleManager implements ApplicationListener<ApplicationReadyEv
                 //ignore
             }
 
-            HashMap<String, ? extends MockHandleInterface> spiMap = SpiManager.getSpiMap(clazz);
+            Map<String, ? extends MockHandleInterface> spiMap = SpiManager.getSpiMap(clazz);
             MockHandleInterface mockHandleInterface = spiMap.get(key);
             if (mockHandleInterface == null) {
                 return null;

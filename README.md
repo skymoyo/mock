@@ -5,18 +5,22 @@
  - classpath:MockAgent 指定需要代理的方法
 
 # 版本升级
-## 0.1.0
+
+## 0.1.x
+### 0.1.0
 **feature:**
  - 请求参数改成spel对比
  - 返回报文支持spel替换文本
+ - Spi 支持 **重复注解**
+ - 针对返回数据通过@Spi可自定义解析规则 
 
 **notice**
 - 不兼容之前版本
 - 代理 interface 接口是参数无法获取正确的参数名称，只能获取到名称 arg0 arg1...
 
  
-## 0.0.3
- 
+## 0.0.X
+### 0.0.3
 **feature:**
 - ProxyScanAgent  通过 mock.proxy.file 配置取文件，未配置取 classpath:MockAgent
 - 优化了部分代码
@@ -27,8 +31,7 @@
  - 代理 方法 返回List\<POJO\> 解析异常
  - 服务端返回MockException时，Netty客户端提示  mockNettyClient timeout
  
-## 0.0.2
- 
+### 0.0.2
 **feature:**
 - 代理mock-agent 改成SPI 加载方式
 - 通过 classpath:MockAgent 指定需要代理的方法
@@ -38,8 +41,7 @@
  - netty客户端超过1024字节接口不完整
  - agent代理方法retureClass是pojo导致编译失败
 
-## 0.0.1
-
+### 0.0.1
 - dubbo 2.6.0 代理
 
 

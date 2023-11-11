@@ -1,7 +1,12 @@
 package work.skymoyo.mock.client.utils;
 
+import com.alibaba.fastjson.JSON;
+import work.skymoyo.mock.client.spi.AbstractClassDeserialize;
+import work.skymoyo.mock.client.spi.ClassDeserializeManager;
+
 import java.lang.ref.SoftReference;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -37,6 +42,40 @@ public class BeanMockUtil {
 
     public static String getMethodKey(Method sourceMethod) {
         return sourceMethod.getDeclaringClass().getName() + "#" + sourceMethod.getName();
+    }
+
+    /**
+     * 为了适配URL 将 类限定名 转成 URL
+     *
+     * @param packageName 限定名
+     * @return
+     */
+    public static String getMockUrl(String packageName) {
+        String methodKey = packageName.replaceAll("\\.", "/").replaceAll("#", "/");
+        if (methodKey.startsWith("/")) {
+            return methodKey;
+        }
+        return "/" + methodKey;
+    }
+
+
+    public static <T> T resolveRes(String res, Type type) {
+
+        Class clazz;
+
+        if (type instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType) type;
+            clazz = (Class) parameterizedType.getRawType();
+        } else {
+            clazz = (Class) type;
+        }
+
+        AbstractClassDeserialize deserialize = ClassDeserializeManager.ofClass(clazz);
+        if (deserialize != null) {
+            return (T) deserialize.deserialize(res);
+        }
+
+        return (T) JSON.parseObject(res, type);
     }
 
 

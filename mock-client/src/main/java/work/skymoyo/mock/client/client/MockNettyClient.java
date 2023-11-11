@@ -10,6 +10,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import work.skymoyo.mock.client.spi.CompileManager;
 import work.skymoyo.mock.client.spi.MockCompile;
+import work.skymoyo.mock.client.utils.BeanMockUtil;
 import work.skymoyo.mock.common.enums.OptType;
 import work.skymoyo.mock.common.exception.MockException;
 import work.skymoyo.mock.common.model.MockReq;
@@ -58,7 +59,7 @@ public final class MockNettyClient implements MockClient, ApplicationListener<Ap
         MockReq req = new MockReq();
         req.setUuid(uuid);
         req.setOpt(OptType.MOCK);
-        req.setRoute(this.getMockUrl(url));
+        req.setRoute(BeanMockUtil.getMockUrl(url));
         req.setData(mockCompile.decode(paras));
         future.sendMsg(req);
 
@@ -71,7 +72,7 @@ public final class MockNettyClient implements MockClient, ApplicationListener<Ap
                 throw new MockException(resp.getMsg());
             }
 
-            return this.resolveRes((String) mockCompile.encode(resp.getData()), type);
+            return BeanMockUtil.resolveRes((String) mockCompile.encode(resp.getData()), type);
         } catch (MockException e) {
             throw e;
         } catch (Exception e) {

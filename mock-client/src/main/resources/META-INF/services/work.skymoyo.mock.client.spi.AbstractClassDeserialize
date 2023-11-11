@@ -1,0 +1,6 @@
+work.skymoyo.mock.client.spi.ClassDeserializeByVoid
+work.skymoyo.mock.client.spi.ClassDeserializeByBigDecimal
+work.skymoyo.mock.client.spi.ClassDeserializeByBoolean
+work.skymoyo.mock.client.spi.ClassDeserializeByInteger
+work.skymoyo.mock.client.spi.ClassDeserializeByLong
+work.skymoyo.mock.client.spi.ClassDeserializeByString

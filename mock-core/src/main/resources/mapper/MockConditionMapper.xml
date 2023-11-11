@@ -7,7 +7,6 @@
         <result property="ruleCode" column="rule_code" jdbcType="VARCHAR"/>
         <result property="conditionType" column="condition_type" jdbcType="VARCHAR"/>
         <result property="conditionKey" column="condition_key" jdbcType="VARCHAR"/>
-        <result property="conditionValue" column="condition_value" jdbcType="VARCHAR"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="createUser" column="create_user" jdbcType="VARCHAR"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
@@ -16,7 +15,7 @@
 
 
     <select id="queryByRuleCode" resultType="work.skymoyo.mock.core.resource.entity.MockCondition">
-        select condition_type,condition_key,condition_value from mock_condition where rule_code = #{ruleCode}
+        select condition_type,condition_key from mock_condition where rule_code = #{ruleCode}
     </select>
 
 
@@ -28,93 +27,6 @@
         where `id` = #{id}
     </select>
 
-    <!--查询指定行数据-->
-    <select id="queryAllByLimit" resultMap="MockConditionMap">
-        select
-          id, mock_code, scene, key, value, result
-        from mock_condition
-        limit #{offset}, #{limit}
-    </select>
-
-    <!--通过实体作为筛选条件查询-->
-    <select id="queryAll" resultMap="MockConditionMap">
-        select
-        id, mock_code, scene, key, value, result
-        from mock_condition
-        <where>
-            <if test="id != null">
-                and id = #{id}
-            </if>
-            <if test="mockCode != null and mockCode != ''">
-                and mock_code = #{mockCode}
-            </if>
-            <if test="scene != null and scene != ''">
-                and scene = #{scene}
-            </if>
-            <if test="key != null and key != ''">
-                and key = #{key}
-            </if>
-            <if test="value != null and value != ''">
-                and value = #{value}
-            </if>
-            <if test="result != null and result != ''">
-                and result = #{result}
-            </if>
-        </where>
-    </select>
-
-    <!--新增所有列-->
-    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-        insert into mock_condition(mock_code, scene, key, value, result)
-        values (#{mockCode}, #{scene}, #{key}, #{value}, #{result})
-    </insert>
-
-    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into mock_condition(mock_code, scene, key, value, result)
-        values
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.mockCode}, #{entity.scene}, #{entity.key}, #{entity.value}, #{entity.result})
-        </foreach>
-    </insert>
-
-    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into mock_condition(mock_code, scene, key, value, result)
-        values
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.mockCode}, #{entity.scene}, #{entity.key}, #{entity.value}, #{entity.result})
-        </foreach>
-        on duplicate key update
-        mock_code = values(mockCode) , scene = values(scene) , key = values(key) , value = values(value) , result =
-        values(result)
-    </insert>
-
-    <!--通过主键修改数据-->
-    <update id="update">
-        update mock_condition
-        <set>
-            <if test="mockCode != null and mockCode != ''">
-                mock_code = #{mockCode},
-            </if>
-            <if test="scene != null and scene != ''">
-                scene = #{scene},
-            </if>
-            <if test="key != null and key != ''">
-                key = #{key},
-            </if>
-            <if test="value != null and value != ''">
-                value = #{value},
-            </if>
-            <if test="result != null and result != ''">
-                result = #{result},
-            </if>
-        </set>
-        where id = #{id}
-    </update>
-
-    <!--通过主键删除-->
-    <delete id="deleteById">
-        delete from mock_condition where id = #{id}
-    </delete>
 
 </mapper>
 

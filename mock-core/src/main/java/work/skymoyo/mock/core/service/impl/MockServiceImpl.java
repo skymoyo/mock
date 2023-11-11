@@ -55,6 +55,8 @@ public class MockServiceImpl implements MockService {
 
         for (MockRule mockRule : mockRuleList) {
 
+            log.info("[{}]规则执行 \r\n 规则配置:[{}] \r\n 请求数据：[{}]  ", mockRule.getRuleName(), mockRule, req);
+
             List<MockCondition> mockConditionList = mockConditionDao.queryByRuleCode(mockRule.getRuleCode());
             if (CollectionUtils.isEmpty(mockConditionList)) {
                 log.warn("[{}]未配置场景", mockCode);
@@ -66,6 +68,7 @@ public class MockServiceImpl implements MockService {
                 MockConditionService mockConditionService = mockHandleManager.selectorHandle(MockHandleTypeEnum.REQ, mockCondition.getConditionType(), MockConditionService.class);
 
                 isSend = mockConditionService.mockConditionValue(req, mockCondition);
+                log.info("[{}]规则执行 \r\n 匹配类型[{}] 条件[{}] \r\n 执行结果: [{}] ", mockRule.getRuleName(), mockCondition.getConditionType(), mockCondition.getConditionKey(), isSend);
                 if (!isSend) {
                     break;
                 }
@@ -73,7 +76,7 @@ public class MockServiceImpl implements MockService {
 
             if (isSend) {
                 MockResultService mockResultService = mockHandleManager.selectorHandle(MockHandleTypeEnum.RESP, mockRule.getRuleType(), MockResultService.class);
-                log.info("[{}]规则执行,规则配置:[{}] \r\n 请求数据：[{}] ", mockRule.getRuleName(), mockRule, req);
+                log.info("[{}]规则执行返回数据", mockRule.getRuleName());
                 return mockResultService.getResult(req, mockRule);
             }
         }

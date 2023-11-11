@@ -18,6 +18,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import work.skymoyo.mock.client.spi.CompileManager;
 import work.skymoyo.mock.client.spi.MockCompile;
+import work.skymoyo.mock.client.utils.BeanMockUtil;
 import work.skymoyo.mock.common.enums.OptType;
 import work.skymoyo.mock.common.exception.MockException;
 import work.skymoyo.mock.common.model.MockReq;
@@ -59,7 +60,7 @@ public class MockHttpClient implements MockClient, ApplicationListener<Applicati
 
 
         if (isRpc) {
-            url = getMockUrl(url);
+            url = BeanMockUtil.getMockUrl(url);
         }
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
@@ -91,7 +92,7 @@ public class MockHttpClient implements MockClient, ApplicationListener<Applicati
             String res = EntityUtils.toString(response.getEntity());
             log.info("mockHttpClient res:{}", res);
 
-            return this.resolveRes((String) mockCompile.encode(res), type);
+            return BeanMockUtil.resolveRes((String) mockCompile.encode(res), type);
 
         } catch (Exception e) {
             log.error("mockHttpClient error：{}", e.getMessage(), e);

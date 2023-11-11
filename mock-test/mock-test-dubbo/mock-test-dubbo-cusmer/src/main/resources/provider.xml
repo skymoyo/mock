@@ -8,7 +8,7 @@
 
     <dubbo:application name="dubbo-test-service" owner="vector"/>
     <dubbo:protocol name="dubbo" port="2181"/>
-    <dubbo:registry protocol="zookeeper" address="127.0.0.1" port="2181"
+    <dubbo:registry protocol="zookeeper" address="192.168.1.17" port="2181"
                     timeout="5000"></dubbo:registry>
 
 

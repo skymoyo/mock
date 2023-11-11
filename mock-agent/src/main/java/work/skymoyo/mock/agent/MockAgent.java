@@ -25,7 +25,7 @@ public class MockAgent {
             Method proxy = agentManager.getMethod("proxy", ClassPool.class);
             proxy.invoke(agentManager.newInstance(), pool);
 
-            log.debug("mock agent end");
+            log.debug("mock agent end\r\n");
         } catch (Throwable e) {
             //ignore
         }

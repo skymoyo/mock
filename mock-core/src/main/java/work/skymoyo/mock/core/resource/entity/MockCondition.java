@@ -30,10 +30,7 @@ public class MockCondition implements Serializable {
      * 条件
      */
     private String conditionKey;
-    /**
-     * 条件匹配值
-     */
-    private String conditionValue;
+
     /**
      * 创建时间
      */
