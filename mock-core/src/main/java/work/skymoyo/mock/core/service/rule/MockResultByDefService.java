@@ -2,6 +2,7 @@ package work.skymoyo.mock.core.service.rule;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import work.skymoyo.mock.common.enums.MockHandleTypeEnum;
+import work.skymoyo.mock.common.model.MockDataBo;
 import work.skymoyo.mock.common.model.MockReq;
 import work.skymoyo.mock.core.annotation.MockHandle;
 import work.skymoyo.mock.core.resource.dao.MockRuleDao;
@@ -17,7 +18,7 @@ public class MockResultByDefService implements MockResultService {
 
 
     @Override
-    public String getResult(MockReq req, MockRule mockRule) {
+    public MockDataBo getResult(MockReq req, MockRule mockRule) {
         return mockRuleDao.queryResultById(mockRule.getId());
     }
 

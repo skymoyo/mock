@@ -2,6 +2,7 @@ package work.skymoyo.mock.client.client;
 
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -21,6 +22,7 @@ import work.skymoyo.mock.client.spi.MockCompile;
 import work.skymoyo.mock.client.utils.BeanMockUtil;
 import work.skymoyo.mock.common.enums.OptType;
 import work.skymoyo.mock.common.exception.MockException;
+import work.skymoyo.mock.common.model.MockDataBo;
 import work.skymoyo.mock.common.model.MockReq;
 import work.skymoyo.mock.rpc.config.MockConf;
 import work.skymoyo.mock.rpc.netty.ClientInitializer;
@@ -89,10 +91,12 @@ public class MockHttpClient implements MockClient, ApplicationListener<Applicati
                 log.info("mockHttpClient error：{}", response.getStatusLine());
             }
 
-            String res = EntityUtils.toString(response.getEntity());
+            HttpEntity entity = response.getEntity();
+            String res = EntityUtils.toString(entity);
             log.info("mockHttpClient res:{}", res);
 
-            return BeanMockUtil.resolveRes((String) mockCompile.encode(res), type);
+            MockDataBo bo = JSON.parseObject(res, MockDataBo.class);
+            return BeanMockUtil.resolveRes((String) mockCompile.encode(bo.getData()), type, bo.getDataClass());
 
         } catch (Exception e) {
             log.error("mockHttpClient error：{}", e.getMessage(), e);

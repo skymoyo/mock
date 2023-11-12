@@ -7,7 +7,9 @@ import org.springframework.util.CollectionUtils;
 import work.skymoyo.mock.common.enums.MockHandleTypeEnum;
 import work.skymoyo.mock.common.enums.OptType;
 import work.skymoyo.mock.common.exception.MockException;
+import work.skymoyo.mock.common.model.MockDataBo;
 import work.skymoyo.mock.common.model.MockReq;
+import work.skymoyo.mock.common.model.MockResp;
 import work.skymoyo.mock.core.resource.dao.MockConditionDao;
 import work.skymoyo.mock.core.resource.dao.MockConfigDao;
 import work.skymoyo.mock.core.resource.dao.MockRuleDao;
@@ -37,7 +39,7 @@ public class MockServiceImpl implements MockService {
     private MockHandleManager mockHandleManager;
 
     @Override
-    public String mock(MockReq req) {
+    public MockDataBo mock(MockReq req) {
 
         String route = req.getRoute();
         String realRoute = route.replace("/mock", "").replace("mock", "");
@@ -93,6 +95,6 @@ public class MockServiceImpl implements MockService {
         req.setHead(this.getReqHead(request));
         req.setData(this.getReqData(request));
         req.setOpt(OptType.MOCK);
-        return this.mock(req);
+        return this.mock(req).getData();
     }
 }

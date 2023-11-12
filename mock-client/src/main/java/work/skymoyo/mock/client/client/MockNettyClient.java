@@ -72,7 +72,7 @@ public final class MockNettyClient implements MockClient, ApplicationListener<Ap
                 throw new MockException(resp.getMsg());
             }
 
-            return BeanMockUtil.resolveRes((String) mockCompile.encode(resp.getData()), type);
+            return BeanMockUtil.resolveRes((String) mockCompile.encode(resp.getData()), type, resp.getDataClass());
         } catch (MockException e) {
             throw e;
         } catch (Exception e) {

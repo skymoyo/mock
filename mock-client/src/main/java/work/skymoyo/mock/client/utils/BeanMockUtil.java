@@ -59,7 +59,7 @@ public class BeanMockUtil {
     }
 
 
-    public static <T> T resolveRes(String res, Type type) {
+    public static <T> T resolveRes(String res, Type type, String dataClass) {
 
         Class clazz;
 
@@ -72,7 +72,7 @@ public class BeanMockUtil {
 
         AbstractClassDeserialize deserialize = ClassDeserializeManager.ofClass(clazz);
         if (deserialize != null) {
-            return (T) deserialize.deserialize(res);
+            return (T) deserialize.deserialize(res, type, dataClass);
         }
 
         return (T) JSON.parseObject(res, type);

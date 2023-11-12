@@ -4,4 +4,6 @@ work.skymoyo.test.service.TestService#helloSpi
 work.skymoyo.test.service.TestService#getPerson
 work.skymoyo.test.service.RemoteTestService#getPerson
 work.skymoyo.test.service.RemoteTestService#spelResp
-work.skymoyo.test.service.RestTemplateService#rest
+##work.skymoyo.test.service.RestTemplateService#rest
+org.springframework.web.client.RestTemplate#exchange
+##org.apache.http.impl.client.CloseableHttpClient#execute
