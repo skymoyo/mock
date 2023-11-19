@@ -15,4 +15,7 @@ public class RemoteTestService {
     public Person spelResp(Person person) {
         return null;
     }
+
+    public void testVoid() {
+    }
 }
