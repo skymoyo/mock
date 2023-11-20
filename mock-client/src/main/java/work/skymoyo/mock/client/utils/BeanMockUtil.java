@@ -25,7 +25,7 @@ public class BeanMockUtil {
 
         return METHOD_MAP.computeIfAbsent(key, r -> {
             try {
-                return new SoftReference<>(clazz.getMethod(methodName, params));
+                return new SoftReference<>(clazz.getDeclaredMethod(methodName, params));
             } catch (NoSuchMethodException e) {
                 throw new RuntimeException(e);
             }

@@ -16,7 +16,7 @@
  - 针对泛型，规则里配置 class
  
 **fix:**
-- 方法非public无法代理
+- 非public方法无法代理
 - 方法返回void无法代理 
     
 **notice**
