@@ -11,7 +11,7 @@
 
     <artifactId>mock-core</artifactId>
     <name>mock-core</name>
-    <version>0.0.3</version>
+    <version>${mock.version}</version>
     <description>mock核心</description>
 
 
