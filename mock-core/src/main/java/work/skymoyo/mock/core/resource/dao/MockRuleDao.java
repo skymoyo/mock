@@ -2,6 +2,7 @@ package work.skymoyo.mock.core.resource.dao;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
+import work.skymoyo.mock.common.model.MockDataBo;
 import work.skymoyo.mock.core.resource.entity.MockRule;
 import org.apache.ibatis.annotations.Param;
 
@@ -93,5 +94,12 @@ public interface MockRuleDao {
      */
     int deleteById(Long id);
 
+    /**
+     * 查询返回结果
+     *
+     * @param id
+     * @return
+     */
+    MockDataBo queryResultById(Long id);
 }
 

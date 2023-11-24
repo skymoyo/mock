@@ -3,7 +3,9 @@ package work.skymoyo.mock.core.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import work.skymoyo.mock.common.exception.MockException;
+import work.skymoyo.mock.common.model.MockDataBo;
 import work.skymoyo.mock.common.model.MockReq;
+import work.skymoyo.mock.common.model.MockResp;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -59,7 +61,7 @@ public interface MockService {
     }
 
 
-    String mock(MockReq<Object> req);
+    MockDataBo mock(MockReq req);
 
     String mockHttp(HttpServletRequest request, HttpServletResponse response);
 

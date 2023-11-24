@@ -10,6 +10,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import work.skymoyo.mock.client.spi.CompileManager;
 import work.skymoyo.mock.client.spi.MockCompile;
+import work.skymoyo.mock.client.utils.BeanMockUtil;
 import work.skymoyo.mock.common.enums.OptType;
 import work.skymoyo.mock.common.exception.MockException;
 import work.skymoyo.mock.common.model.MockReq;
@@ -21,6 +22,7 @@ import work.skymoyo.mock.rpc.netty.RpcFuture;
 import work.skymoyo.mock.rpc.netty.RpcManager;
 
 import java.lang.reflect.Type;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -47,17 +49,17 @@ public final class MockNettyClient implements MockClient, ApplicationListener<Ap
 
 
     @Override
-    public <R> R doMock(Type type, String url, boolean isRpc, Object... paras) {
+    public <R> R doMock(Type type, String url, Map<String, Object> paras, boolean isRpc) {
 
         String uuid = UUID.randomUUID().toString();
 
-        RpcFuture<Object, Object> future = new RpcFuture<>(channelManager.getChannel());
+        RpcFuture<Object> future = new RpcFuture<>(channelManager.getChannel());
         rpcManager.add(uuid, future);
 
-        MockReq<Object> req = new MockReq<>();
+        MockReq req = new MockReq();
         req.setUuid(uuid);
         req.setOpt(OptType.MOCK);
-        req.setRoute(this.getMockUrl(url));
+        req.setRoute(BeanMockUtil.getMockUrl(url));
         req.setData(mockCompile.decode(paras));
         future.sendMsg(req);
 
@@ -70,7 +72,7 @@ public final class MockNettyClient implements MockClient, ApplicationListener<Ap
                 throw new MockException(resp.getMsg());
             }
 
-            return this.resolveRes((String) mockCompile.encode(resp.getData()), type);
+            return BeanMockUtil.resolveRes((String) mockCompile.encode(resp.getData()), type, resp.getDataClass());
         } catch (MockException e) {
             throw e;
         } catch (Exception e) {

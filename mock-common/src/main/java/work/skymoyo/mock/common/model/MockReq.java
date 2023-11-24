@@ -7,7 +7,7 @@ import java.util.Map;
 
 
 @Data
-public class MockReq<T> extends BaseObject {
+public class MockReq extends BaseObject {
 
     private Map<String, Object> head;
 
@@ -17,7 +17,7 @@ public class MockReq<T> extends BaseObject {
 
     private String route;
 
-    private T data;
+    private Map<String, Object> data;
 
     @Override
     public byte getObject() {

@@ -11,6 +11,8 @@ public class MockResp<T> extends BaseObject {
 
     private String msg;
 
+    private String dataClass;
+
     private T data;
 
     @Override

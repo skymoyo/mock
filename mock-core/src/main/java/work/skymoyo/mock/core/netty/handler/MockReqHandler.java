@@ -8,6 +8,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import work.skymoyo.mock.common.model.MockDataBo;
 import work.skymoyo.mock.common.model.MockReq;
 import work.skymoyo.mock.common.model.MockResp;
 import work.skymoyo.mock.core.service.MockContext;
@@ -19,7 +20,7 @@ import java.util.Objects;
 @Slf4j
 @Component
 @ChannelHandler.Sharable
-public class MockReqHandler extends SimpleChannelInboundHandler<MockReq<Object>> {
+public class MockReqHandler extends SimpleChannelInboundHandler<MockReq> {
 
     @Autowired
     private MockService mockService;
@@ -28,7 +29,7 @@ public class MockReqHandler extends SimpleChannelInboundHandler<MockReq<Object>>
     private MockContext mockContext;
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, MockReq<Object> req) {
+    protected void channelRead0(ChannelHandlerContext ctx, MockReq req) {
         log.info("mock服务端接收到消息{}", JSON.toJSONString(req, SerializerFeature.PrettyFormat));
 
         mockContext.setLocalMockReq(req);
@@ -36,7 +37,9 @@ public class MockReqHandler extends SimpleChannelInboundHandler<MockReq<Object>>
         MockResp<Object> resp = new MockResp<>();
         resp.setSuccess(true);
         resp.setUuid(req.getUuid());
-        resp.setData(mockService.mock(req));
+        MockDataBo dataBo = mockService.mock(req);
+        resp.setDataClass(dataBo.getDataClass());
+        resp.setData(dataBo.getData());
 
         ctx.channel().writeAndFlush(resp);
 

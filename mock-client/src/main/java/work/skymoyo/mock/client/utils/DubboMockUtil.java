@@ -46,10 +46,7 @@ public class DubboMockUtil {
 
         try {
             if (MockContextUtil.isEnableMock()) {
-                log.info("mock-agent 接口");
-                String methodKey = BeanMockUtil.getMethodKey(method);
-
-                return MethodMockUtil.proxyInvoker(methodKey, method.getGenericReturnType(), args);
+                return MethodMockUtil.proxyInvoker(method, args);
             }
 
         } catch (Throwable e) {

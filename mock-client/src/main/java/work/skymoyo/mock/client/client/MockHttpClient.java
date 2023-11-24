@@ -2,6 +2,7 @@ package work.skymoyo.mock.client.client;
 
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -18,14 +19,17 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import work.skymoyo.mock.client.spi.CompileManager;
 import work.skymoyo.mock.client.spi.MockCompile;
+import work.skymoyo.mock.client.utils.BeanMockUtil;
 import work.skymoyo.mock.common.enums.OptType;
 import work.skymoyo.mock.common.exception.MockException;
+import work.skymoyo.mock.common.model.MockDataBo;
 import work.skymoyo.mock.common.model.MockReq;
 import work.skymoyo.mock.rpc.config.MockConf;
 import work.skymoyo.mock.rpc.netty.ClientInitializer;
 
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
+import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
@@ -54,12 +58,12 @@ public class MockHttpClient implements MockClient, ApplicationListener<Applicati
     }
 
     @Override
-    public <R> R doMock(Type type, String url, boolean isRpc, Object... paras) {
+    public <R> R doMock(Type type, String url, Map<String, Object> paras, boolean isRpc) {
+
 
         if (isRpc) {
-            url = getMockUrl(url);
+            url = BeanMockUtil.getMockUrl(url);
         }
-
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpPost httpPost = new HttpPost(mockConf.getHost() + ":" + mockConf.getPort() + mockConf.getPrefix() + url);
@@ -69,7 +73,7 @@ public class MockHttpClient implements MockClient, ApplicationListener<Applicati
             httpPost.addHeader("Content-type", "application/json;charset=utf-8");
             httpPost.setHeader("Accept", "application/json");
 
-            MockReq<Object> req = new MockReq<>();
+            MockReq req = new MockReq();
             req.setUuid(UUID.randomUUID().toString());
             req.setOpt(OptType.MOCK);
             req.setRoute(url);
@@ -87,10 +91,12 @@ public class MockHttpClient implements MockClient, ApplicationListener<Applicati
                 log.info("mockHttpClient error：{}", response.getStatusLine());
             }
 
-            String res = EntityUtils.toString(response.getEntity());
+            HttpEntity entity = response.getEntity();
+            String res = EntityUtils.toString(entity);
             log.info("mockHttpClient res:{}", res);
 
-            return this.resolveRes((String) mockCompile.encode(res), type);
+            MockDataBo bo = JSON.parseObject(res, MockDataBo.class);
+            return BeanMockUtil.resolveRes((String) mockCompile.encode(bo.getData()), type, bo.getDataClass());
 
         } catch (Exception e) {
             log.error("mockHttpClient error：{}", e.getMessage(), e);

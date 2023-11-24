@@ -9,6 +9,7 @@ import work.skymoyo.mock.client.client.MockNettyClient;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/mock")
@@ -20,7 +21,9 @@ public class MockController {
     @GetMapping(value = "/say/{hello}", produces = {"application/json"})
     public String save(@PathVariable("hello") String hello, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         String servletPath = httpServletRequest.getServletPath();
-        return mockNettyClient.doMock(String.class, servletPath, false, hello);
+        HashMap<String, Object> map = new HashMap<>(1);
+        map.put("hello", hello);
+        return mockNettyClient.doMock(String.class, servletPath, map, false);
     }
 
 

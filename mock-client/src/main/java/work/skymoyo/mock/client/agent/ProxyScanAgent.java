@@ -115,15 +115,19 @@ public class ProxyScanAgent implements Agent {
 
             String returnType = method.getReturnType().getName();
 
-            method.insertBefore("try{"
-                    + "if(work.skymoyo.mock.client.utils.MockContextUtil.isEnableMock()){"
-                    + " java.lang.reflect.Type type = work.skymoyo.mock.client.utils.BeanMockUtil.getReturnType(work.skymoyo.mock.client.utils.BeanMockUtil.getMethod($class,\"" + method.getName() + "\",$sig));"
-//                    + " java.lang.reflect.Type type = $class.getMethod(\"" + method.getName() + "\",$sig).getGenericReturnType();"
-                    + " Object obj  =  work.skymoyo.mock.client.utils.MethodMockUtil.proxyInvoker(\"" + methodKey + "\", type, $args);"
-                    + " return (" + returnType + ") obj;"
-                    + "  }"
-                    + "} catch (Throwable ignored){"
-                    + "}");
+            String coding = new StringBuilder().append("try{")
+                    .append("if(work.skymoyo.mock.client.utils.MockContextUtil.isEnableMock()){")
+                    .append(" java.lang.reflect.Method method  = work.skymoyo.mock.client.utils.BeanMockUtil.getMethod($class,\"")
+                    .append(method.getName())
+                    .append("\",$sig);")
+                    .append(" Object obj  =  work.skymoyo.mock.client.utils.MethodMockUtil.proxyInvoker( method ,  $args);")
+                    .append(Objects.equals(returnType, "void") ? " return;" : " return (" + returnType + ") obj;")
+                    .append("  }")
+                    .append("} catch (Throwable ignored){")
+                    .append("}")
+                    .toString();
+
+            method.insertBefore(coding);
 
         } catch (Exception e) {
             log.warn("处理方法:{} 异常:{}", methodKey, e.getMessage(), e);

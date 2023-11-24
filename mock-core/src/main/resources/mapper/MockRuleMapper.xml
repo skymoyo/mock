@@ -154,5 +154,12 @@
         delete from mock_rule where id = #{id}
     </delete>
 
+
+    <select id="queryResultById" resultType="work.skymoyo.mock.common.model.MockDataBo">
+       select rule_result as 'data',rule_class as 'dataClass'
+        from mock_rule
+        where id = #{id}
+    </select>
+
 </mapper>
 
