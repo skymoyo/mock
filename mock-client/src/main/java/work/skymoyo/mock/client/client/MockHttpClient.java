@@ -1,6 +1,8 @@
 package work.skymoyo.mock.client.client;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
@@ -22,8 +24,8 @@ import work.skymoyo.mock.client.spi.MockCompile;
 import work.skymoyo.mock.client.utils.BeanMockUtil;
 import work.skymoyo.mock.common.enums.OptType;
 import work.skymoyo.mock.common.exception.MockException;
-import work.skymoyo.mock.common.model.MockDataBo;
 import work.skymoyo.mock.common.model.MockReq;
+import work.skymoyo.mock.common.model.MockResp;
 import work.skymoyo.mock.rpc.config.MockConf;
 import work.skymoyo.mock.rpc.netty.ClientInitializer;
 
@@ -46,9 +48,9 @@ public class MockHttpClient implements MockClient, ApplicationListener<Applicati
 
 
     private static final RequestConfig REQUEST_CONFIG = RequestConfig.custom()
-            .setConnectTimeout(80000)
+            .setConnectTimeout(20000)
             .setConnectionRequestTimeout(10000)
-            .setSocketTimeout(70000)
+            .setSocketTimeout(10000)
             .build();
 
 
@@ -59,7 +61,6 @@ public class MockHttpClient implements MockClient, ApplicationListener<Applicati
 
     @Override
     public <R> R doMock(Type type, String url, Map<String, Object> paras, boolean isRpc) {
-
 
         if (isRpc) {
             url = BeanMockUtil.getMockUrl(url);
@@ -79,7 +80,7 @@ public class MockHttpClient implements MockClient, ApplicationListener<Applicati
             req.setRoute(url);
             req.setData(mockCompile.decode(paras));
 
-            log.info("[{}]mockHttpClient req[{}]", url, JSON.toJSONString(req));
+            log.info("[{}]mockHttpClient req\r\n[{}]", url, JSON.toJSONString(req, SerializerFeature.PrettyFormat));
 
             //设置消息体
             httpPost.setEntity(new StringEntity(JSON.toJSONString(req), Charset.forName("UTF-8")));
@@ -89,14 +90,21 @@ public class MockHttpClient implements MockClient, ApplicationListener<Applicati
             int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode != HttpStatus.SC_OK) {
                 log.info("mockHttpClient error：{}", response.getStatusLine());
+                throw new MockException("mockHttpClient 请求异常");
             }
 
             HttpEntity entity = response.getEntity();
             String res = EntityUtils.toString(entity);
             log.info("mockHttpClient res:{}", res);
 
-            MockDataBo bo = JSON.parseObject(res, MockDataBo.class);
-            return BeanMockUtil.resolveRes((String) mockCompile.encode(bo.getData()), type, bo.getDataClass());
+            MockResp<String> resp = JSON.parseObject(res, new TypeReference<MockResp<String>>() {
+            });
+
+            if (!resp.isSuccess()) {
+                throw new MockException(resp.getMsg());
+            }
+
+            return BeanMockUtil.resolveRes((String) mockCompile.encode(resp.getData()), type, resp.getDataClass());
 
         } catch (Exception e) {
             log.error("mockHttpClient error：{}", e.getMessage(), e);

@@ -6,7 +6,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import work.skymoyo.mock.common.model.MockReq;
+import work.skymoyo.mock.common.model.MockResp;
 import work.skymoyo.mock.core.service.MockService;
+import work.skymoyo.mock.core.service.impl.OptServiceByMockImpl;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,10 +20,12 @@ public class MockController {
 
     @Autowired
     private MockService mockService;
+    @Autowired
+    private OptServiceByMockImpl optServiceByMock;
 
     @RequestMapping(value = "/allReq/**", method = {RequestMethod.GET, RequestMethod.POST})
-    public Object mock(@RequestBody MockReq req) {
-        return mockService.mock(req);
+    public MockResp<String> mock(@RequestBody MockReq req) {
+        return optServiceByMock.exec(req);
     }
 
     @RequestMapping(value = "/**", method = {RequestMethod.GET, RequestMethod.POST})

@@ -1,8 +1,10 @@
 package work.skymoyo.mock.client.utils;
 
 import com.alibaba.fastjson.JSON;
+import org.springframework.util.StringUtils;
 import work.skymoyo.mock.client.spi.AbstractClassDeserialize;
 import work.skymoyo.mock.client.spi.ClassDeserializeManager;
+import work.skymoyo.mock.common.exception.MockException;
 
 import java.lang.ref.SoftReference;
 import java.lang.reflect.Method;
@@ -63,11 +65,20 @@ public class BeanMockUtil {
 
         Class clazz;
 
-        if (type instanceof ParameterizedType) {
-            ParameterizedType parameterizedType = (ParameterizedType) type;
-            clazz = (Class) parameterizedType.getRawType();
-        } else {
-            clazz = (Class) type;
+        try {
+            if (StringUtils.hasLength(dataClass)) {
+                clazz = Class.forName(dataClass);
+                type = clazz;
+            } else {
+                if (type instanceof ParameterizedType) {
+                    ParameterizedType parameterizedType = (ParameterizedType) type;
+                    clazz = (Class) parameterizedType.getRawType();
+                } else {
+                    clazz = (Class) type;
+                }
+            }
+        } catch (Exception e) {
+            throw new MockException(e.getMessage());
         }
 
         AbstractClassDeserialize deserialize = ClassDeserializeManager.ofClass(clazz);

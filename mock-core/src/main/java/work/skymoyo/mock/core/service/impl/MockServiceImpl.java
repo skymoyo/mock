@@ -9,7 +9,6 @@ import work.skymoyo.mock.common.enums.OptType;
 import work.skymoyo.mock.common.exception.MockException;
 import work.skymoyo.mock.common.model.MockDataBo;
 import work.skymoyo.mock.common.model.MockReq;
-import work.skymoyo.mock.common.model.MockResp;
 import work.skymoyo.mock.core.resource.dao.MockConditionDao;
 import work.skymoyo.mock.core.resource.dao.MockConfigDao;
 import work.skymoyo.mock.core.resource.dao.MockRuleDao;
@@ -78,7 +77,18 @@ public class MockServiceImpl implements MockService {
 
             if (isSend) {
                 MockResultService mockResultService = mockHandleManager.selectorHandle(MockHandleTypeEnum.RESP, mockRule.getRuleType(), MockResultService.class);
-                log.info("[{}]规则执行返回数据", mockRule.getRuleName());
+                Long blockTime = mockRule.getBlockTime();
+                if (blockTime != null) {
+                    log.info("[{}]规则执行需等待[{}]秒后返回数据:", mockRule.getRuleName(), blockTime);
+                    try {
+                        Thread.sleep(blockTime * 1000);
+                    } catch (Exception e) {
+                        log.info("[{}]规则执行需等待[{}]秒后返回数据,等待异常:{}", mockRule.getRuleName(), blockTime, e.getMessage());
+                    }
+                } else {
+                    log.info("[{}]规则执行返回数据", mockRule.getRuleName());
+                }
+
                 return mockResultService.getResult(req, mockRule);
             }
         }

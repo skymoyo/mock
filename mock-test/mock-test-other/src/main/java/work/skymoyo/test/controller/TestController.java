@@ -2,7 +2,7 @@ package work.skymoyo.test.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import work.skymoyo.mock.client.client.MockNettyClient;
+import work.skymoyo.mock.client.client.MockClient;
 import work.skymoyo.test.model.Person;
 import work.skymoyo.test.service.TestService;
 
@@ -16,7 +16,7 @@ import java.util.List;
 public class TestController {
 
     @Autowired(required = false)
-    private MockNettyClient mockNettyClient;
+    private MockClient mockClient;
 
     @Autowired
     private TestService testService;
@@ -27,7 +27,7 @@ public class TestController {
         String servletPath = httpServletRequest.getServletPath();
         HashMap<String, Object> map = new HashMap<>(1);
         map.put("hello", hello);
-        return mockNettyClient.doMock(String.class, servletPath, map, false);
+        return mockClient.doMock(String.class, servletPath, map, false);
     }
 
 

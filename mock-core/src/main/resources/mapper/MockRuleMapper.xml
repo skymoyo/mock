@@ -9,6 +9,7 @@
         <result property="ruleName" column="rule_name" jdbcType="VARCHAR"/>
         <result property="ruleType" column="rule_type" jdbcType="VARCHAR"/>
         <result property="ruleResult" column="rule_result" jdbcType="VARCHAR"/>
+        <result property="blockTime" column="block_time" jdbcType="INTEGER"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="createUser" column="create_user" jdbcType="VARCHAR"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
@@ -17,7 +18,11 @@
 
 
     <sql id="base_field">
-         id, mock_code, rule_code, rule_name, rule_type
+         id, mock_code, rule_code, rule_name, rule_type, block_time
+    </sql>
+
+    <sql id="all_field">
+          id, mock_code, rule_code, rule_name, rule_type, rule_result, block_time, create_time, create_user, update_time, update_user
     </sql>
 
 
@@ -32,7 +37,7 @@
     <!--查询单个-->
     <select id="queryById" resultMap="MockRuleMap">
         select
-          id, mock_code, rule_code, rule_name, rule_type, rule_result, create_time, create_user, update_time, update_user
+        <include refid="all_field"></include>
         from mock_rule
         where id = #{id}
     </select>
@@ -40,7 +45,7 @@
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="MockRuleMap">
         select
-          id, mock_code, rule_code, rule_name, rule_type, rule_result, create_time, create_user, update_time, update_user
+        <include refid="all_field"></include>
         from mock_rule
         limit #{offset}, #{limit}
     </select>
@@ -48,7 +53,7 @@
     <!--通过实体作为筛选条件查询-->
     <select id="queryAll" resultMap="MockRuleMap">
         select
-        id, mock_code, rule_code, rule_name, rule_type, rule_result, create_time, create_user, update_time, update_user
+        <include refid="all_field"></include>
         from mock_rule
         <where>
             <if test="id != null">
@@ -69,6 +74,9 @@
             <if test="ruleResult != null and ruleResult != ''">
                 and rule_result = #{ruleResult}
             </if>
+            <if test="blockTime != null">
+                and block_time = #{blockTime}
+            </if>
             <if test="createTime != null">
                 and create_time = #{createTime}
             </if>
@@ -86,32 +94,35 @@
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-        insert into mock_rule(mock_code, rule_code, rule_name, rule_type, rule_result, create_time, create_user, update_time, update_user)
-        values (#{mockCode}, #{ruleCode}, #{ruleName}, #{ruleType}, #{ruleResult}, #{createTime}, #{createUser}, #{updateTime}, #{updateUser})
+        insert into mock_rule(mock_code, rule_code, rule_name, rule_type, rule_result, block_time,
+         create_time, create_user, update_time, update_user)
+        values (#{mockCode}, #{ruleCode}, #{ruleName}, #{ruleType}, #{ruleResult}, #{blockTime},
+        #{createTime}, #{createUser}, #{updateTime}, #{updateUser})
     </insert>
 
     <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into mock_rule(mock_code, rule_code, rule_name, rule_type, rule_result, create_time, create_user,
-        update_time, update_user)
+        insert into mock_rule(mock_code, rule_code, rule_name, rule_type, rule_result, block_time,
+        create_time, create_user,update_time, update_user)
         values
         <foreach collection="entities" item="entity" separator=",">
             (#{entity.mockCode}, #{entity.ruleCode}, #{entity.ruleName}, #{entity.ruleType}, #{entity.ruleResult},
-            #{entity.createTime}, #{entity.createUser}, #{entity.updateTime}, #{entity.updateUser})
+            #{entity.blockTime}, #{entity.createTime}, #{entity.createUser}, #{entity.updateTime}, #{entity.updateUser})
         </foreach>
     </insert>
 
     <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into mock_rule(mock_code, rule_code, rule_name, rule_type, rule_result, create_time, create_user,
-        update_time, update_user)
+        insert into mock_rule(mock_code, rule_code, rule_name, rule_type, rule_result,block_time,
+        create_time, create_user, update_time, update_user)
         values
         <foreach collection="entities" item="entity" separator=",">
             (#{entity.mockCode}, #{entity.ruleCode}, #{entity.ruleName}, #{entity.ruleType}, #{entity.ruleResult},
-            #{entity.createTime}, #{entity.createUser}, #{entity.updateTime}, #{entity.updateUser})
+            #{entity.blockTime}, #{entity.createTime}, #{entity.createUser}, #{entity.updateTime}, #{entity.updateUser})
         </foreach>
         on duplicate key update
-        mock_code = values(mock_code) , rule_code = values(rule_code) , rule_name = values(rule_name) , rule_type =
-        values(rule_type) , rule_result = values(rule_result) , create_time = values(create_time) , create_user =
-        values(create_user) , update_time = values(update_time) , update_user = values(update_user)
+        mock_code = values(mock_code) , rule_code = values(rule_code) , rule_name = values(rule_name) ,
+        rule_type =values(rule_type) , rule_result = values(rule_result) , block_time = values(block_time) ,
+        create_time = values(create_time) , create_user = values(create_user) ,
+        update_time = values(update_time) , update_user = values(update_user)
     </insert>
 
     <!--通过主键修改数据-->
@@ -132,6 +143,9 @@
             </if>
             <if test="ruleResult != null and ruleResult != ''">
                 rule_result = #{ruleResult},
+            </if>
+            <if test="blockTime != null">
+                block_time = #{blockTime},
             </if>
             <if test="createTime != null">
                 create_time = #{createTime},

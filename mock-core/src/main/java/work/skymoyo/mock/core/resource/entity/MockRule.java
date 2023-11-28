@@ -39,6 +39,10 @@ public class MockRule implements Serializable {
      */
     private String ruleResult;
     /**
+     * 堵塞时长
+     */
+    private Long blockTime;
+    /**
      * 创建时间
      */
     private Date createTime;

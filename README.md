@@ -7,6 +7,15 @@
 # 版本升级
 
 ## 0.1.x
+### 0.1.1
+
+**feature:**
+- 加入接口塞时间
+
+**fix:**
+- 针对泛型，规则里配置 class,默认使用fastjson,无需使用自定义解析规则
+- 服务端返回MockException时，mockHttpClient 正确提示异常
+
 ### 0.1.0
 **feature:**
  - 请求参数改成spel对比

@@ -23,9 +23,16 @@ public class OptServiceByMockImpl implements OptService<String> {
 
         MockResp<String> resp = new MockResp<>();
         resp.setUuid(req.getUuid());
-        MockDataBo bo = mockService.mock(req);
-        resp.setDataClass(bo.getDataClass());
-        resp.setData(bo.getData());
+
+        try {
+            MockDataBo bo = mockService.mock(req);
+            resp.setDataClass(bo.getDataClass());
+            resp.setData(bo.getData());
+            resp.setSuccess(true);
+        } catch (Exception e) {
+            resp.setSuccess(false);
+            resp.setMsg(e.getMessage());
+        }
         return resp;
     }
 }
