@@ -5,6 +5,13 @@ import java.util.Map;
 
 public interface MockClient {
 
+    /**
+     * 检查配置ID
+     *
+     * @return
+     */
+    void checkAppId();
+
 
     /**
      * 执行mock
@@ -16,5 +23,6 @@ public interface MockClient {
      * @return
      */
     <R> R doMock(Type type, String url, Map<String, Object> paras, boolean isRpc);
+
 
 }

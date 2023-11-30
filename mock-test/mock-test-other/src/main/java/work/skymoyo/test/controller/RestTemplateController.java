@@ -19,7 +19,8 @@ public class RestTemplateController {
 
     @GetMapping(value = "/test", produces = {"application/json"})
     public Object save(@RequestParam("body") String body) {
-
+        restTemplateService.rest("http://127.0.0.1:8080/test/say/123121", body, String.class);
+        restTemplateService.rest("http://127.0.0.1:8080/test/say/123121", body, String.class);
         return restTemplateService.rest("http://127.0.0.1:8080/test/say/123121", body, String.class);
 //         restTemplateService.apacheHttp("http://127.0.0.1:8080/test/say/123121", String.class);
 //        return null;

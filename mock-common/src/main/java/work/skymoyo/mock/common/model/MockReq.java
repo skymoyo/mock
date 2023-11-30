@@ -9,6 +9,10 @@ import java.util.Map;
 @Data
 public class MockReq extends BaseObject {
 
+    private String appId;
+
+    private Long threadId;
+
     private Map<String, Object> head;
 
     private String uuid;

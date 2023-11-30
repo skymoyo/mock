@@ -15,7 +15,7 @@ public class RpcManager {
     private static final ConcurrentMap<String, RpcFuture<Object>> HOLDER = new ConcurrentHashMap<>();
 
 
-    public void add(String uuid, RpcFuture<Object> rpcFuture) {
+    public void add(String uuid, RpcFuture rpcFuture) {
         HOLDER.put(uuid, rpcFuture);
     }
 

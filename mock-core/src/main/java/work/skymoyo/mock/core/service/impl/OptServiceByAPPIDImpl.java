@@ -2,34 +2,26 @@ package work.skymoyo.mock.core.service.impl;
 
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import work.skymoyo.mock.common.enums.MockHandleTypeEnum;
-import work.skymoyo.mock.common.model.MockDataBo;
 import work.skymoyo.mock.common.model.MockReq;
 import work.skymoyo.mock.common.model.MockResp;
 import work.skymoyo.mock.core.annotation.MockHandle;
-import work.skymoyo.mock.core.service.MockService;
 import work.skymoyo.mock.core.service.OptService;
 
-
 @Slf4j
-@MockHandle(type = MockHandleTypeEnum.REQ, method = "MOCK")
-public class OptServiceByMockImpl implements OptService<String> {
-
-    @Autowired
-    private MockService mockService;
-
+@MockHandle(type = MockHandleTypeEnum.REQ, method = "APPID")
+public class OptServiceByAPPIDImpl implements OptService<Boolean > {
 
     @Override
-    public MockResp<String> exec(MockReq req) {
+    public MockResp<Boolean> exec(MockReq req) {
 
-        MockResp<String> resp = new MockResp<>();
+        MockResp<Boolean> resp = new MockResp<>();
         resp.setUuid(req.getUuid());
-
         try {
-            MockDataBo bo = mockService.mock(req);
-            resp.setDataClass(bo.getDataClass());
-            resp.setData(bo.getData());
+            String appId = req.getAppId();
+
+            resp.setData(StringUtils.hasLength(appId));
             resp.setSuccess(true);
         } catch (Exception e) {
             resp.setSuccess(false);

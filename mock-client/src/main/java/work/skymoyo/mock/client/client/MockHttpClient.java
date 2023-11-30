@@ -55,6 +55,11 @@ public class MockHttpClient implements MockClient, ApplicationListener<Applicati
 
 
     @Override
+    public void checkAppId() {
+
+    }
+
+    @Override
     public void onApplicationEvent(@Nullable ApplicationReadyEvent event) {
         mockCompile = compileManager.getSpiMap(mockConf.getCompile(), event);
     }
@@ -76,6 +81,7 @@ public class MockHttpClient implements MockClient, ApplicationListener<Applicati
 
             MockReq req = new MockReq();
             req.setUuid(UUID.randomUUID().toString());
+            req.setThreadId(Thread.currentThread().getId());
             req.setOpt(OptType.MOCK);
             req.setRoute(url);
             req.setData(mockCompile.decode(paras));

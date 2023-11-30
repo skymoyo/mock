@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import work.skymoyo.mock.common.spi.Spi;
 import work.skymoyo.mock.common.spi.SpiManager;
 
+import java.lang.reflect.Type;
 import java.util.Map;
 
 @Slf4j
@@ -33,9 +34,10 @@ public class ClassDeserializeManager {
 
     }
 
-    public static AbstractClassDeserialize ofClass(Class clazz) {
-        return ClassDeserializeManager.getSpiMap(clazz.getName());
+    public static AbstractClassDeserialize ofType(Type type) {
+        return ClassDeserializeManager.getSpiMap(type.getTypeName());
     }
+
 
     public static AbstractClassDeserialize getSpiMap(String key) {
         return SPI_MAP.get(key);

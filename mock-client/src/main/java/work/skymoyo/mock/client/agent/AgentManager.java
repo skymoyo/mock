@@ -7,7 +7,7 @@ import work.skymoyo.mock.common.spi.SpiManager;
 import java.util.Map;
 
 /**
- * work.skymoyo.mock.agent.MockAgent#premain(java.lang.String, java.lang.instrument.Instrumentation) 触发
+ * {@link work.skymoyo.mock.agent.MockAgent#premain(java.lang.String, java.lang.instrument.Instrumentation)} 触发
  */
 @Slf4j
 public class AgentManager {

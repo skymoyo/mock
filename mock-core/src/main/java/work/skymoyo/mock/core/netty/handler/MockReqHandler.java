@@ -8,11 +8,16 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import work.skymoyo.mock.common.enums.MockHandleTypeEnum;
+import work.skymoyo.mock.common.enums.OptType;
 import work.skymoyo.mock.common.model.MockDataBo;
 import work.skymoyo.mock.common.model.MockReq;
 import work.skymoyo.mock.common.model.MockResp;
 import work.skymoyo.mock.core.service.MockContext;
+import work.skymoyo.mock.core.service.MockHandleInterface;
 import work.skymoyo.mock.core.service.MockService;
+import work.skymoyo.mock.core.service.OptService;
+import work.skymoyo.mock.core.service.rule.MockHandleManager;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -24,7 +29,8 @@ public class MockReqHandler extends SimpleChannelInboundHandler<MockReq> {
 
     @Autowired
     private MockService mockService;
-
+    @Autowired
+    private MockHandleManager mockHandleManager;
     @Autowired
     private MockContext mockContext;
 
@@ -34,12 +40,12 @@ public class MockReqHandler extends SimpleChannelInboundHandler<MockReq> {
 
         mockContext.setLocalMockReq(req);
 
-        MockResp<Object> resp = new MockResp<>();
-        resp.setSuccess(true);
-        resp.setUuid(req.getUuid());
-        MockDataBo dataBo = mockService.mock(req);
-        resp.setDataClass(dataBo.getDataClass());
-        resp.setData(dataBo.getData());
+        OptType opt = req.getOpt();
+
+        OptService optService = mockHandleManager.selectorHandle(MockHandleTypeEnum.REQ, opt.name(), OptService.class);
+
+        MockResp resp = optService.exec(req);
+
 
         ctx.channel().writeAndFlush(resp);
 

@@ -49,6 +49,31 @@ public final class MockNettyClient implements MockClient, ApplicationListener<Ap
 
 
     @Override
+    public void checkAppId() {
+        try {
+            String uuid = UUID.randomUUID().toString();
+            while (channelManager.getChannel() == null) {
+                Thread.sleep(100L);
+            }
+            RpcFuture<Boolean> future = new RpcFuture<>(channelManager.getChannel());
+            rpcManager.add(uuid, future);
+            MockReq req = new MockReq();
+            req.setUuid(uuid);
+            req.setAppId(mockConf.getAppId());
+            req.setOpt(OptType.APPID);
+            future.sendMsg(req);
+            if (!future.get().getData()) {
+                log.warn("检查项目appId失败：");
+                System.exit(-1);
+            }
+
+        } catch (Exception e) {
+            log.warn("检查项目appId异常：{}", e.getMessage(), e);
+            System.exit(-1);
+        }
+    }
+
+    @Override
     public <R> R doMock(Type type, String url, Map<String, Object> paras, boolean isRpc) {
 
         String uuid = UUID.randomUUID().toString();
@@ -57,7 +82,9 @@ public final class MockNettyClient implements MockClient, ApplicationListener<Ap
         rpcManager.add(uuid, future);
 
         MockReq req = new MockReq();
+        req.setAppId(mockConf.getAppId());
         req.setUuid(uuid);
+        req.setThreadId(Thread.currentThread().getId());
         req.setOpt(OptType.MOCK);
         req.setRoute(BeanMockUtil.getMockUrl(url));
         req.setData(mockCompile.decode(paras));

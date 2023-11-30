@@ -12,7 +12,7 @@ import work.skymoyo.mock.common.spi.Spi;
 import java.lang.reflect.Type;
 import java.util.Optional;
 
-@Spi("org.springframework.http.ResponseEntity")
+@Spi("org.springframework.http.ResponseEntity<T>")
 public class ClassDeserializeByResponseEntity extends AbstractClassDeserialize<ResponseEntity<Object>> {
 
     @Override
