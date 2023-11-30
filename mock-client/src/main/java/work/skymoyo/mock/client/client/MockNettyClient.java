@@ -8,9 +8,11 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import work.skymoyo.mock.client.spi.CompileManager;
 import work.skymoyo.mock.client.spi.MockCompile;
 import work.skymoyo.mock.client.utils.BeanMockUtil;
+import work.skymoyo.mock.client.utils.MockContextUtil;
 import work.skymoyo.mock.common.enums.OptType;
 import work.skymoyo.mock.common.exception.MockException;
 import work.skymoyo.mock.common.model.MockReq;
@@ -39,6 +41,8 @@ public final class MockNettyClient implements MockClient, ApplicationListener<Ap
     private CompileManager compileManager;
     @Autowired
     private MockConf mockConf;
+    @Autowired
+    private MockContextUtil mockContextUtil;
 
     private MockCompile mockCompile;
 
@@ -49,27 +53,34 @@ public final class MockNettyClient implements MockClient, ApplicationListener<Ap
 
 
     @Override
-    public void checkAppId() {
+    public String getAppId() {
         try {
             String uuid = UUID.randomUUID().toString();
             while (channelManager.getChannel() == null) {
                 Thread.sleep(100L);
             }
-            RpcFuture<Boolean> future = new RpcFuture<>(channelManager.getChannel());
+            RpcFuture<String> future = new RpcFuture<>(channelManager.getChannel());
             rpcManager.add(uuid, future);
             MockReq req = new MockReq();
             req.setUuid(uuid);
-            req.setAppId(mockConf.getAppId());
+            req.setThreadId(Thread.currentThread().getId());
+            req.setAppId(mockContextUtil.getAppId());
+            req.setAppName(mockContextUtil.getAppName());
             req.setOpt(OptType.APPID);
             future.sendMsg(req);
-            if (!future.get().getData()) {
-                log.warn("检查项目appId失败：");
+
+            MockResp<String> mockResp = future.get();
+
+            if (!mockResp.isSuccess() || !StringUtils.hasLength(mockResp.getData())) {
+                log.warn("获取项目appId失败:[{}]", mockResp.getMsg());
                 System.exit(-1);
             }
 
+            return mockResp.getData();
         } catch (Exception e) {
-            log.warn("检查项目appId异常：{}", e.getMessage(), e);
+            log.warn("获取项目appId异常：{}", e.getMessage(), e);
             System.exit(-1);
+            return null;
         }
     }
 
@@ -82,7 +93,8 @@ public final class MockNettyClient implements MockClient, ApplicationListener<Ap
         rpcManager.add(uuid, future);
 
         MockReq req = new MockReq();
-        req.setAppId(mockConf.getAppId());
+        req.setAppId(mockContextUtil.getAppId());
+        req.setAppName(mockContextUtil.getAppName());
         req.setUuid(uuid);
         req.setThreadId(Thread.currentThread().getId());
         req.setOpt(OptType.MOCK);

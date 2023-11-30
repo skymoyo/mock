@@ -6,11 +6,11 @@ import java.util.Map;
 public interface MockClient {
 
     /**
-     * 检查配置ID
+     * 获取项目id
      *
      * @return
      */
-    void checkAppId();
+    String getAppId();
 
 
     /**

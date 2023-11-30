@@ -1,5 +1,6 @@
 package work.skymoyo.mock.common.model;
 
+import com.alibaba.fastjson.JSON;
 import lombok.Data;
 import work.skymoyo.mock.common.enums.OptType;
 
@@ -11,7 +12,9 @@ public class MockReq extends BaseObject {
 
     private String appId;
 
-    private Long threadId;
+    private String appName;
+
+    private long threadId;
 
     private Map<String, Object> head;
 
@@ -26,5 +29,10 @@ public class MockReq extends BaseObject {
     @Override
     public byte getObject() {
         return 1;
+    }
+
+    @Override
+    public String toString() {
+        return JSON.toJSONString(this);
     }
 }

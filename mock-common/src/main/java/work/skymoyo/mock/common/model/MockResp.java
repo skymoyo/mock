@@ -1,5 +1,6 @@
 package work.skymoyo.mock.common.model;
 
+import com.alibaba.fastjson.JSON;
 import lombok.Data;
 
 @Data
@@ -19,4 +20,10 @@ public class MockResp<T> extends BaseObject {
     public byte getObject() {
         return 2;
     }
+
+    @Override
+    public String toString() {
+        return JSON.toJSONString(this);
+    }
+
 }

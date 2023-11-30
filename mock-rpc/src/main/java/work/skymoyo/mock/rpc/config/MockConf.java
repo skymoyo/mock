@@ -11,7 +11,7 @@ import java.util.Optional;
 @ConfigurationProperties(prefix = "mock.config")
 public class MockConf {
 
-    private String appId;
+//    private String appId;
 
     private String host;
 
