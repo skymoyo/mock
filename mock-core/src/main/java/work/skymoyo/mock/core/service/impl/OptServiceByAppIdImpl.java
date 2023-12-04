@@ -15,7 +15,7 @@ import java.util.UUID;
 
 @Slf4j
 @MockHandle(type = MockHandleTypeEnum.REQ, method = "APPID")
-public class OptServiceByAPPIDImpl implements OptService<String> {
+public class OptServiceByAppIdImpl implements OptService<String> {
     @Autowired
     private MockRecordDao mockRecordDao;
 
@@ -34,8 +34,11 @@ public class OptServiceByAPPIDImpl implements OptService<String> {
             MockRecord record = new MockRecord();
             record.setAppId(resp.getData());
             record.setAppName(req.getAppName());
-            record.setMockReq(req.toString());
+            record.setClient(req.getClient());
             record.setThreadId(req.getThreadId());
+            record.setUuid(req.getUuid());
+            record.setRoute(req.getRoute());
+            record.setMockReq(req.toString());
             record.setMockResp(resp.toString());
             mockRecordDao.insert(record);
         }

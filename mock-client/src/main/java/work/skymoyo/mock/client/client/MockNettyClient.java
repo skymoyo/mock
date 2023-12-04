@@ -62,11 +62,13 @@ public final class MockNettyClient implements MockClient, ApplicationListener<Ap
             RpcFuture<String> future = new RpcFuture<>(channelManager.getChannel());
             rpcManager.add(uuid, future);
             MockReq req = new MockReq();
-            req.setUuid(uuid);
-            req.setThreadId(Thread.currentThread().getId());
             req.setAppId(mockContextUtil.getAppId());
             req.setAppName(mockContextUtil.getAppName());
+            req.setClient("mockNettyClient");
+            req.setThreadId(Thread.currentThread().getId());
+            req.setUuid(uuid);
             req.setOpt(OptType.APPID);
+            req.setRoute(OptType.APPID.name());
             future.sendMsg(req);
 
             MockResp<String> mockResp = future.get();
@@ -95,8 +97,9 @@ public final class MockNettyClient implements MockClient, ApplicationListener<Ap
         MockReq req = new MockReq();
         req.setAppId(mockContextUtil.getAppId());
         req.setAppName(mockContextUtil.getAppName());
-        req.setUuid(uuid);
+        req.setClient("mockNettyClient");
         req.setThreadId(Thread.currentThread().getId());
+        req.setUuid(uuid);
         req.setOpt(OptType.MOCK);
         req.setRoute(BeanMockUtil.getMockUrl(url));
         req.setData(mockCompile.decode(paras));

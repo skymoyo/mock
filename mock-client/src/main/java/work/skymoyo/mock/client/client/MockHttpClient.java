@@ -70,11 +70,13 @@ public class MockHttpClient implements MockClient, ApplicationListener<Applicati
             httpPost.setHeader("Accept", "application/json");
 
             MockReq req = new MockReq();
-            req.setUuid(UUID.randomUUID().toString());
-            req.setThreadId(Thread.currentThread().getId());
             req.setAppId(mockContextUtil.getAppId());
             req.setAppName(mockContextUtil.getAppName());
+            req.setClient("mockHttpClient");
+            req.setThreadId(Thread.currentThread().getId());
+            req.setUuid(UUID.randomUUID().toString());
             req.setOpt(OptType.APPID);
+            req.setRoute(OptType.APPID.name());
 
             log.info("[{}]mockHttpClient req\r\n[{}]", URL, JSON.toJSONString(req, SerializerFeature.PrettyFormat));
 
@@ -132,8 +134,9 @@ public class MockHttpClient implements MockClient, ApplicationListener<Applicati
             MockReq req = new MockReq();
             req.setAppId(mockContextUtil.getAppId());
             req.setAppName(mockContextUtil.getAppName());
-            req.setUuid(UUID.randomUUID().toString());
+            req.setClient("mockHttpClient");
             req.setThreadId(Thread.currentThread().getId());
+            req.setUuid(UUID.randomUUID().toString());
             req.setOpt(OptType.MOCK);
             req.setRoute(url);
             req.setData(mockCompile.decode(paras));

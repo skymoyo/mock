@@ -3,29 +3,32 @@
 <mapper namespace="work.skymoyo.mock.core.resource.dao.MockRecordDao">
 
     <resultMap type="work.skymoyo.mock.core.resource.entity.MockRecord" id="MockRecordMap">
-        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="id" column="ID" jdbcType="INTEGER"/>
         <result property="appId" column="app_id" jdbcType="VARCHAR"/>
         <result property="appName" column="app_name" jdbcType="VARCHAR"/>
         <result property="threadId" column="thread_id" jdbcType="INTEGER"/>
+        <result property="uuid" column="uuid" jdbcType="VARCHAR"/>
+        <result property="client" column="client" jdbcType="VARCHAR"/>
+        <result property="route" column="route" jdbcType="VARCHAR"/>
         <result property="mockReq" column="mock_req" jdbcType="VARCHAR"/>
         <result property="mockResp" column="mock_resp" jdbcType="VARCHAR"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
-    <sql id="base_field">
-        id, app_id, app_name, thread_id, mock_req, mock_resp, create_time, update_time
+    <sql id="BaseColumn">
+        ID, app_id, app_name, thread_id, uuid, client, route, mock_req, mock_resp, create_time, update_time
     </sql>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-        insert into mock.mock_record(app_id, app_name, thread_id, mock_req, mock_resp)
-        values (#{appId}, #{appName}, #{threadId}, #{mockReq}, #{mockResp})
+        insert into mock_record(app_id, app_name, thread_id, uuid, client, route, mock_req, mock_resp)
+        values (#{appId}, #{appName}, #{threadId}, #{uuid}, #{client}, #{route}, #{mockReq}, #{mockResp})
     </insert>
 
     <!--通过主键修改数据-->
     <update id="update">
-        update mock.mock_record
+        update mock_record
         <set>
             <if test="appId != null and appId != ''">
                 app_id = #{appId},
@@ -36,6 +39,15 @@
             <if test="threadId != null">
                 thread_id = #{threadId},
             </if>
+            <if test="uuid != null and uuid != ''">
+                uuid = #{uuid},
+            </if>
+            <if test="client != null and client != ''">
+                client = #{client},
+            </if>
+            <if test="route != null and route != ''">
+                route = #{route},
+            </if>
             <if test="mockReq != null and mockReq != ''">
                 mock_req = #{mockReq},
             </if>
@@ -43,87 +55,97 @@
                 mock_resp = #{mockResp},
             </if>
         </set>
-        where id = #{id}
+        where ID = #{id}
     </update>
 
-
-    <!--查询单个-->
-    <select id="queryById" resultMap="MockRecordMap">
+    <select id="select" resultMap="MockRecordMap">
         select
-        <include refid="base_field"/>
-        from mock.mock_record
-        where id = #{id}
-    </select>
-
-    <!--查询指定行数据-->
-    <select id="queryAllByLimit" resultMap="MockRecordMap">
-        select
-        <include refid="base_field"/>
-        from mock.mock_record
-        limit #{offset}, #{limit}
-    </select>
-
-    <!--通过实体作为筛选条件查询-->
-    <select id="queryAll" resultMap="MockRecordMap">
-        select
-        <include refid="base_field"/>
-        from mock.mock_record
-        <where>
-            <if test="id != null">
-                and id = #{id}
-            </if>
-            <if test="appId != null and appId != ''">
-                and app_id = #{appId}
-            </if>
-            <if test="appName != null and appName != ''">
-                and app_name = #{appName}
-            </if>
-            <if test="threadId != null">
-                and thread_id = #{threadId}
-            </if>
-            <if test="mockReq != null and mockReq != ''">
-                and mock_req = #{mockReq}
-            </if>
-            <if test="mockResp != null and mockResp != ''">
-                and mock_resp = #{mockResp}
-            </if>
-            <if test="createTime != null">
-                and create_time = #{createTime}
-            </if>
-            <if test="updateTime != null">
-                and update_time = #{updateTime}
-            </if>
-        </where>
+        <include refid="BaseColumn"/>
+        from mock_record
+        where app_id =#{appId}
+        and thread_id = #{threadId}
     </select>
 
 
-    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into mock.mock_record(app_id, app_name, thread_id, mock_req, mock_resp, create_time, update_time)
-        values
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.appId}, #{entity.appName}, #{entity.threadId}, #{entity.mockReq}, #{entity.mockResp},
-            #{entity.createTime}, #{entity.updateTime})
-        </foreach>
-    </insert>
+    <!--&lt;!&ndash;查询单个&ndash;&gt;-->
+    <!--<select id="queryById" resultMap="MockRecordMap">-->
+    <!--select-->
+    <!--<include refid="BaseColumn"/>-->
+    <!--from mock_record-->
+    <!--where ID = #{id}-->
+    <!--</select>-->
 
-    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into mock.mock_record(app_id, app_name, thread_id, mock_req, mock_resp, create_time, update_time)
-        values
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.appId}, #{entity.appName}, #{entity.threadId}, #{entity.mockReq}, #{entity.mockResp},
-            #{entity.createTime}, #{entity.updateTime})
-        </foreach>
-        on duplicate key update
-        app_id = values(app_id) , app_name = values(app_name) , thread_id = values(thread_id) , mock_req =
-        values(mock_req) , mock_resp = values(mock_resp) , create_time = values(create_time) , update_time =
-        values(update_time)
-    </insert>
+    <!--&lt;!&ndash;查询指定行数据&ndash;&gt;-->
+    <!--<select id="queryAllByLimit" resultMap="MockRecordMap">-->
+    <!--select-->
+    <!--<include refid="BaseColumn"/>-->
+    <!--from mock_record-->
+    <!--limit #{offset}, #{limit}-->
+    <!--</select>-->
+
+    <!--&lt;!&ndash;通过实体作为筛选条件查询&ndash;&gt;-->
+    <!--<select id="queryAll" resultMap="MockRecordMap">-->
+    <!--select-->
+    <!--<include refid="BaseColumn"/>-->
+    <!--from mock_record-->
+    <!--<where>-->
+    <!--<if test="id != null">-->
+    <!--and ID = #{id}-->
+    <!--</if>-->
+    <!--<if test="appId != null and appId != ''">-->
+    <!--and app_id = #{appId}-->
+    <!--</if>-->
+    <!--<if test="appName != null and appName != ''">-->
+    <!--and app_name = #{appName}-->
+    <!--</if>-->
+    <!--<if test="threadId != null">-->
+    <!--and thread_id = #{threadId}-->
+    <!--</if>-->
+    <!--<if test="uuid != null and uuid != ''">-->
+    <!--and uuid = #{uuid}-->
+    <!--</if>-->
+    <!--<if test="client != null and client != ''">-->
+    <!--and client = #{client}-->
+    <!--</if>-->
+    <!--<if test="mockReq != null and mockReq != ''">-->
+    <!--and mock_req = #{mockReq}-->
+    <!--</if>-->
+    <!--<if test="mockResp != null and mockResp != ''">-->
+    <!--and mock_resp = #{mockResp}-->
+    <!--</if>-->
+    <!--</where>-->
+    <!--</select>-->
 
 
-    <!--通过主键删除-->
-    <delete id="deleteById">
-        delete from mock.mock_record where id = #{id}
-    </delete>
+    <!--<insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">-->
+    <!--insert into mock_record(app_id, app_name, thread_id, uuid, client, mock_req, mock_resp, create_time,-->
+    <!--update_time)-->
+    <!--values-->
+    <!--<foreach collection="entities" item="entity" separator=",">-->
+    <!--(#{entity.appId}, #{entity.appName}, #{entity.threadId}, #{entity.uuid}, #{entity.client},-->
+    <!--#{entity.mockReq}, #{entity.mockResp}, #{entity.createTime}, #{entity.updateTime})-->
+    <!--</foreach>-->
+    <!--</insert>-->
+
+    <!--<insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">-->
+    <!--insert into mock_record(app_id, app_name, thread_id, uuid, client, mock_req, mock_resp, create_time,-->
+    <!--update_time)-->
+    <!--values-->
+    <!--<foreach collection="entities" item="entity" separator=",">-->
+    <!--(#{entity.appId}, #{entity.appName}, #{entity.threadId}, #{entity.uuid}, #{entity.client},-->
+    <!--#{entity.mockReq}, #{entity.mockResp}, #{entity.createTime}, #{entity.updateTime})-->
+    <!--</foreach>-->
+    <!--on duplicate key update-->
+    <!--app_id = values(app_id) , app_name = values(app_name) , thread_id = values(thread_id) , uuid = values(uuid) ,-->
+    <!--client = values(client) , mock_req = values(mock_req) , mock_resp = values(mock_resp) , create_time =-->
+    <!--values(create_time) , update_time = values(update_time)-->
+    <!--</insert>-->
+
+
+    <!--&lt;!&ndash;通过主键删除&ndash;&gt;-->
+    <!--<delete id="deleteById">-->
+    <!--delete from mock_record where ID = #{id}-->
+    <!--</delete>-->
 
 </mapper>
 

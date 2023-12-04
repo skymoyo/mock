@@ -13,7 +13,7 @@ import java.util.Date;
  */
 @Data
 public class MockRecord implements Serializable {
-    private static final long serialVersionUID = -82198451755590630L;
+    private static final long serialVersionUID = 946235190331156735L;
     /**
      * id
      */
@@ -29,7 +29,19 @@ public class MockRecord implements Serializable {
     /**
      * 线程id
      */
-    private long threadId;
+    private Long threadId;
+    /**
+     * 请求流水
+     */
+    private String uuid;
+    /**
+     * 请求客户端
+     */
+    private String client;
+    /**
+     * 请求路由
+     */
+    private String route;
     /**
      * 请求数据
      */

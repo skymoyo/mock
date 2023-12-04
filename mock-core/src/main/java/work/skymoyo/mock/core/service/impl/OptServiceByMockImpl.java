@@ -29,8 +29,11 @@ public class OptServiceByMockImpl implements OptService<String> {
         MockRecord record = new MockRecord();
         record.setAppId(req.getAppId());
         record.setAppName(req.getAppName());
-        record.setMockReq(req.toString());
+        record.setClient(req.getClient());
         record.setThreadId(req.getThreadId());
+        record.setUuid(req.getUuid());
+        record.setRoute(req.getRoute());
+        record.setMockReq(req.toString());
 
         MockResp<String> resp = new MockResp<>();
         resp.setUuid(req.getUuid());
@@ -45,7 +48,7 @@ public class OptServiceByMockImpl implements OptService<String> {
             resp.setSuccess(false);
             resp.setMsg(e.getMessage());
         } finally {
-            if(record.getId()!=null){
+            if (record.getId() != null) {
                 record.setMockResp(resp.toString());
                 mockRecordDao.update(record);
             }

@@ -10,12 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import work.skymoyo.mock.common.enums.MockHandleTypeEnum;
 import work.skymoyo.mock.common.enums.OptType;
-import work.skymoyo.mock.common.model.MockDataBo;
 import work.skymoyo.mock.common.model.MockReq;
 import work.skymoyo.mock.common.model.MockResp;
 import work.skymoyo.mock.core.service.MockContext;
-import work.skymoyo.mock.core.service.MockHandleInterface;
-import work.skymoyo.mock.core.service.MockService;
 import work.skymoyo.mock.core.service.OptService;
 import work.skymoyo.mock.core.service.rule.MockHandleManager;
 
@@ -27,8 +24,6 @@ import java.util.Objects;
 @ChannelHandler.Sharable
 public class MockReqHandler extends SimpleChannelInboundHandler<MockReq> {
 
-    @Autowired
-    private MockService mockService;
     @Autowired
     private MockHandleManager mockHandleManager;
     @Autowired

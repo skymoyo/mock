@@ -16,6 +16,8 @@ public class MockReq extends BaseObject {
 
     private long threadId;
 
+    private String client;
+
     private Map<String, Object> head;
 
     private String uuid;
