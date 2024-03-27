@@ -13,6 +13,37 @@
         <result property="updateUser" column="update_user" jdbcType="VARCHAR"/>
     </resultMap>
 
+    <resultMap type="work.skymoyo.mock.core.admin.model.MockConfigVO" id="MockConfigVOMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="mockCode" column="mock_code" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="route" column="route" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="createUser" column="create_user" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateUser" column="update_user" jdbcType="VARCHAR"/>
+
+        <collection property="ruleList" column="mock_code" ofType="work.skymoyo.mock.core.admin.model.MockRuleVO"
+                    javaType="ArrayList" select="work.skymoyo.mock.core.resource.dao.MockRuleDao.queryAllByMockCode">
+            <result property="id" column="id" jdbcType="INTEGER"/>
+            <result property="mockCode" column="mock_code" jdbcType="VARCHAR"/>
+            <result property="ruleCode" column="rule_code" jdbcType="VARCHAR"/>
+            <result property="ruleName" column="rule_name" jdbcType="VARCHAR"/>
+            <result property="ruleType" column="rule_type" jdbcType="VARCHAR"/>
+            <result property="ruleResult" column="rule_result" jdbcType="VARCHAR"/>
+            <result property="ruleClass" column="rule_class" jdbcType="VARCHAR"/>
+            <result property="blockTime" column="block_time" jdbcType="INTEGER"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="createUser" column="create_user" jdbcType="VARCHAR"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="updateUser" column="update_user" jdbcType="VARCHAR"/>
+
+        </collection>
+    </resultMap>
+
+    <sql id="base_filed">
+       id, mock_code, name, route, create_time, create_user, update_time, update_user
+    </sql>
 
     <select id="queryByRoute" resultMap="MockConfigMap">
         select
@@ -25,7 +56,7 @@
     <!--查询单个-->
     <select id="queryById" resultMap="MockConfigMap">
         select
-          id, mock_code, name, route, create_time, create_user, update_time, update_user
+        <include refid="base_filed"/>
         from mock_config
         where id = #{id}
     </select>
@@ -131,6 +162,15 @@
     <delete id="deleteById">
         delete from mock_config where id = #{id}
     </delete>
+
+
+    <select id="selectVO" resultMap="MockConfigVOMap">
+        select
+        <include refid="base_filed"/>
+        from mock_config
+        where id = #{id}
+    </select>
+
 
 </mapper>
 

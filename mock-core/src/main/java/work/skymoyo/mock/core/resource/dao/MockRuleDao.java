@@ -3,6 +3,7 @@ package work.skymoyo.mock.core.resource.dao;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 import work.skymoyo.mock.common.model.MockDataBo;
+import work.skymoyo.mock.core.admin.model.MockRuleVO;
 import work.skymoyo.mock.core.resource.entity.MockRule;
 import org.apache.ibatis.annotations.Param;
 
@@ -26,6 +27,14 @@ public interface MockRuleDao {
      * @return 实例对象
      */
     List<MockRule> queryByMockCode(@Param("mockCode") String mockCode);
+
+    /**
+     * 通过mockCode查询数据
+     *
+     * @param mockCode mock编码
+     * @return 实例对象
+     */
+    List<MockRuleVO> queryAllByMockCode(@Param("mockCode") String mockCode);
 
 
     /**

@@ -9,11 +9,42 @@
         <result property="ruleName" column="rule_name" jdbcType="VARCHAR"/>
         <result property="ruleType" column="rule_type" jdbcType="VARCHAR"/>
         <result property="ruleResult" column="rule_result" jdbcType="VARCHAR"/>
+        <result property="ruleClass" column="rule_class" jdbcType="VARCHAR"/>
         <result property="blockTime" column="block_time" jdbcType="INTEGER"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="createUser" column="create_user" jdbcType="VARCHAR"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
         <result property="updateUser" column="update_user" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap type="work.skymoyo.mock.core.admin.model.MockRuleVO" id="MockRuleVOMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="mockCode" column="mock_code" jdbcType="VARCHAR"/>
+        <result property="ruleCode" column="rule_code" jdbcType="VARCHAR"/>
+        <result property="ruleName" column="rule_name" jdbcType="VARCHAR"/>
+        <result property="ruleType" column="rule_type" jdbcType="VARCHAR"/>
+        <result property="ruleResult" column="rule_result" jdbcType="VARCHAR"/>
+        <result property="ruleClass" column="rule_class" jdbcType="VARCHAR"/>
+        <result property="blockTime" column="block_time" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="createUser" column="create_user" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateUser" column="update_user" jdbcType="VARCHAR"/>
+
+        <collection property="conditionList" column="rule_code"
+                    ofType="work.skymoyo.mock.core.resource.entity.MockCondition"
+                    javaType="ArrayList"
+                    select="work.skymoyo.mock.core.resource.dao.MockConditionDao.queryByRuleCode">
+            <result property="id" column="id" jdbcType="INTEGER"/>
+            <result property="ruleCode" column="rule_code" jdbcType="VARCHAR"/>
+            <result property="conditionType" column="condition_type" jdbcType="VARCHAR"/>
+            <result property="conditionKey" column="condition_key" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="createUser" column="create_user" jdbcType="VARCHAR"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="updateUser" column="update_user" jdbcType="VARCHAR"/>
+        </collection>
+
     </resultMap>
 
 
@@ -22,13 +53,20 @@
     </sql>
 
     <sql id="all_field">
-          id, mock_code, rule_code, rule_name, rule_type, rule_result, block_time, create_time, create_user, update_time, update_user
+          id, mock_code, rule_code, rule_name, rule_type, rule_result, rule_class, block_time, create_time, create_user, update_time, update_user
     </sql>
 
 
     <select id="queryByMockCode" resultMap="MockRuleMap">
         select
         <include refid="base_field"></include>
+        from mock_rule
+        where mock_code = #{mockCode}
+    </select>
+
+    <select id="queryAllByMockCode" resultMap="MockRuleVOMap">
+        select
+        <include refid="all_field"></include>
         from mock_rule
         where mock_code = #{mockCode}
     </select>
@@ -174,6 +212,5 @@
         from mock_rule
         where id = #{id}
     </select>
-
 </mapper>
 

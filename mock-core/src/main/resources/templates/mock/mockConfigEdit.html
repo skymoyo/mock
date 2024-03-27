@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('规则配置')"/>
+    <th:block th:include="include :: jsonview-css"/>
+    <th:block th:include="include :: bootstrap-editable-css"/>
+</head>
+<body class="white-bg">>
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+
+    <form class="form-horizontal m" id="form-config-edit" th:object="${mockConfig}">
+        <h4 class="form-header h4">路由配置信息</h4>
+        <div class="row">
+            <div class="col-sm-6">
+
+                <input class="form-control" name="ruleList" id="ruleList"
+                       th:field="*{ruleList}" readonly="true" type="hidden">
+
+                <div class="form-group">
+                    <label class="col-sm-4 control-label is-required">规则编码：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="mockCode" id="mockCode"
+                               th:field="*{mockCode}" readonly="true">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label is-required">规则名称：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="name" id="name"
+                               th:field="*{name}" readonly="true">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label is-required">规则路由：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="route" id="route"
+                               th:field="*{route}" readonly="true">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h4 class="form-header h4">路由规则信息</h4>
+        <div class="row">
+            <div class="col-sm-12">
+                <!--<button type="button" class="btn btn-white btn-sm" onclick="test()">测试</button>-->
+                <!--<button type="button" class="btn btn-white btn-sm" onclick="sub.delRow()"><i class="fa fa-minus"> 删除</i>-->
+                <!--</button>-->
+                <a class="btn btn-danger multiple" onclick="editFlag()">
+                    <i class="fa fa-edit"></i> 启用/禁用编辑
+                </a>
+                <a style="pointer-events:none" class="btn btn-success" onclick="insertRow('configEditTable')">
+                    <i class="fa fa-plus"></i> 新增规则
+                </a>
+                <a type="button" class="btn btn-danger  disabled" onclick="removeRow('configEditTable')">
+                    <i class="fa fa-remove"></i> 删除选择规则
+                </a>
+                <a type="button" class="btn btn-danger" onclick="test()">
+                    <i class="fa circle-o-notch"></i> 测试
+                </a>
+                <div class="col-sm-12 select-table table-striped">
+                    <table id="configEditTable"
+                           data-use-row-attr-func="true"
+                           data-reorderable-rows="true"></table>
+                </div>
+            </div>
+        </div>
+
+    </form>
+
+    <form class="form-horizontal m" id="form-config-test" th:object="${mockConfig}">
+
+        <h4 class="form-header h4">路由配置测试</h4>
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <a class="btn btn-success" onclick="insertRow('configTestDataTable')">
+                    <i class="fa fa-plus"></i> 新增数据行
+                </a>
+                <a class="btn btn-danger multiple" onclick="removeRow('configTestDataTable')">
+                    <i class="fa fa-remove"></i> 删除选择数据行
+                </a>
+                <a class="btn btn-success" onclick="insertRow('configTestHeadTable')">
+                    <i class="fa fa-plus"></i> 新增http head行
+                </a>
+                <a class="btn btn-danger multiple " onclick="removeRow('configTestHeadTable')">
+                    <i class="fa fa-remove"></i> 删除选择head行
+                </a>
+                <div class="col-sm-12 select-table table-striped">
+                    <table id="configTestDataTable"
+                           data-use-row-attr-func="true"
+                           data-reorderable-rows="true"></table>
+                </div>
+
+                <div class="col-sm-12 select-table table-striped">
+                    <table id="configTestHeadTable"
+                           data-use-row-attr-func="true"
+                           data-reorderable-rows="true"></table>
+                </div>
+            </div>
+        </div>
+    </form>
+
+
+    <div class="row">
+        <div class="col-sm-offset-5 col-sm-10">
+            <!--<button type="button" class="btn btn-sm btn-primary" onclick="test()"><i class="fa fa-blind"></i>测试</button>&nbsp;-->
+            <button type="button" class="btn btn-sm btn-primary" onclick="submitHandler()"><i class="fa fa-check"></i>保存
+            </button>&nbsp;
+            <button type="button" class="btn btn-sm btn-danger" onclick=" $.modal.closeAll()"><i
+                    class="fa fa-reply-all"></i>关闭
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<th:block th:include="include :: footer"/>
+<th:block th:include="include :: bootstrap-table-reorder-rows-js"/>
+<th:block th:include="include :: bootstrap-table-editable-js"/>
+<script>
+    var cookieMap = new Map();
+
+    function editFlag() {
+        if (cookieMap.get("edit") === true) {
+            cookieMap.set("edit", false);
+            $(".praise").attr("disabled", true).css("pointer-events", "none");
+        } else {
+            cookieMap.set("edit", true);
+            $('#editRow1').toggleClass('disabled', cookieMap.get("edit") === true);
+            $(".praise").attr("disabled", false).css("pointer-events", "none");
+        }
+        $("#configEditTable").bootstrapTable('refresh', null);
+    }
+
+    function test() {
+        doTest($("#ruleList").val());
+    }
+
+    function oneTest(index) {
+        var ruleList = JSON.parse($("#ruleList").val());
+        var testRow = new Array(ruleList[index]);
+        doTest(JSON.stringify(testRow));
+    }
+
+
+    function doTest(ruleListStr) {
+        // var d = $("#form-config-edit").serializeArray();
+        // var params = $.common.formToJSON("form-config-edit");
+
+        var formData = new FormData();
+        var data = $("#configTestDataTable").bootstrapTable('getData');
+        var head = $("#configTestHeadTable").bootstrapTable('getData');
+
+        if (head != null && head.length > 0) {
+            formData.append("head", JSON.stringify(head));
+        }
+        if (data != null && data.length > 0) {
+            formData.append("data", JSON.stringify(data));
+        }
+        formData.append("route", $("#route").val());
+        formData.append("ruleListStr", ruleListStr);
+
+        var formJson = JSON.stringify(Object.fromEntries(formData.entries()));
+
+        $.ajax({
+            url: ctx + "admin/mockTest",
+            data: formJson,
+            cache: false,
+            contentType: "application/json",
+            processData: false,
+            type: 'POST',
+            dataType: 'json',
+            success: function (result) {
+                if (result.code == web_status.SUCCESS) {
+                    $.modal.alertSuccess(result.data);
+                    $("#configTestDataTable").bootstrapTable('refresh');
+                } else {
+                    debugger;
+                    var msg = result.msg;
+                    if (msg === null || msg === '') {
+                        msg = '系统异常';
+                    }
+                    $.modal.alertError(msg);
+                    $("#configTestDataTable").bootstrapTable('refresh');
+                }
+            },
+        });
+    }
+
+
+    $(function () {
+        var options = {
+            id: "configEditTable",
+            data: JSON.parse($("#ruleList").val()),
+            pagination: false,
+            showSearch: false,
+            showRefresh: false,
+            showToggle: false,
+            showColumns: false,
+            sidePagination: "client",
+            detailView: true,
+            onExpandRow: function (index, row, $detail) {
+                initChildTable(index, row, $detail);
+            },
+            columns: [
+                {
+                    checkbox: true
+                },
+                {
+                    field: 'id',
+                    align: 'center',
+                    title: "规则id"
+                },
+                {
+                    field: 'ruleCode',
+                    align: 'center',
+                    title: '规则编码'
+                },
+                {
+                    field: 'ruleName',
+                    align: 'center',
+                    title: '规则名称'
+                },
+                {
+                    field: 'ruleType',
+                    align: 'center',
+                    title: '规则类型',
+                    formatter: function (value, row, index) {
+                        return value;
+                    }
+                },
+                {
+                    field: 'ruleResult',
+                    align: 'center',
+                    title: '规则返回',
+                    formatter: function (value, row, index) {
+                        if (cookieMap.get("editFlag")) {
+                            return value;
+                        }
+                        return $.table.tooltip(value, 30, "open");
+                    }
+                },
+                {
+                    field: 'ruleClass',
+                    align: 'center',
+                    title: '反序列化类'
+                },
+                {
+                    field: 'blockTime',
+                    align: 'center',
+                    title: '堵塞时长',
+                    formatter: function (value, row, index) {
+                        return value;
+                    }
+                }, {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs " href="javascript:void(0)" onclick="oneTest(\'' + index + '\')"><i class="fa fa-sticky-note"></i>测试当前规则</a> ');
+                        // actions.push('<a class="btn btn-success btn-xs " href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        // actions.push('<a class="btn btn-danger btn-xs " href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }
+            ]
+        };
+        $.table.init(options);
+    });
+
+    initChildTable = function (index, row, $detail) {
+        var childTable = $detail.html('<table style="table-layout:fixed"></table>').find('table');
+
+        $(childTable).bootstrapTable({
+            data: row.conditionList,
+            pagination: false,
+            showSearch: false,
+            showRefresh: false,
+            showToggle: false,
+            showColumns: false,
+            sidePagination: "client",
+            columns: [
+                {
+                    field: 'conditionType',
+                    align: 'center',
+                    title: '匹配类型'
+                },
+                {
+                    field: 'conditionKey',
+                    align: 'center',
+                    title: '匹配条件'
+                }
+            ]
+        });
+
+    };
+
+    $(function () {
+        var options = {
+            id: "configTestHeadTable",
+            pagination: false,
+            showSearch: false,
+            showRefresh: false,
+            showToggle: false,
+            showColumns: false,
+            sidePagination: "client",
+            onReorderRow: function (data, newRow, oldRow, el) {
+                console.table(data)
+                $("#configTestHeadTable").bootstrapTable('load', {
+                    rows: data
+                });
+                return false;
+            },
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field: 'vId',
+                    align: 'center',
+                    visible: false
+                },
+                {
+                    field: 'headKey',
+                    align: 'center',
+                    title: "请求头key",
+                    editable: true
+                },
+                {
+                    field: 'headValue',
+                    align: 'center',
+                    title: "请求头Value",
+                    editable: true
+                }
+            ]
+        };
+        $.table.init(options);
+    });
+
+
+    $(function () {
+        var options = {
+            id: "configTestDataTable",
+            pagination: false,
+            showSearch: false,
+            showRefresh: false,
+            showToggle: false,
+            showColumns: false,
+            sidePagination: "client",
+            onReorderRow: function (data, newRow, oldRow, el) {
+                console.table(data)
+                $("#configTestDataTable").bootstrapTable('load', {
+                    rows: data
+                });
+                return false;
+            },
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field: 'vId',
+                    align: 'center',
+                    visible: false
+                },
+                {
+                    field: 'dataKey',
+                    align: 'center',
+                    title: "请求体key",
+                    editable: true
+                },
+                {
+                    field: 'dataValue',
+                    align: 'center',
+                    title: "请求体Value",
+                    editable: true
+                }
+            ]
+        };
+        $.table.init(options);
+    });
+
+    function getUuid() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            const r = Math.random() * 16 | 0
+            const v = c === 'x' ? r : (r & 0x3 | 0x8)
+            return v.toString(16)
+        })
+    }
+
+
+    /* 新增表格行 */
+    function insertRow(id) {
+        debugger
+        $("#" + id).bootstrapTable('insertRow', {
+            index: 0,
+            row: {
+                vId: getUuid(),
+                dataKey: "username",
+                dataValue: "admin",
+            }
+        }),
+            $("#" + id).bootstrapTable('insertRow', {
+                index: 1,
+                row: {
+                    vId: getUuid(),
+                    dataKey: "password",
+                    dataValue: "admin123",
+                }
+            })
+    }
+
+    /* 删除指定表格行 */
+    function removeRow(id) {
+        debugger
+        var ids = $.table.selectColumns("vId");
+        if (ids.length == 0) {
+            $.modal.alertWarning("请至少选择一条记录");
+            return;
+        }
+        $("#" + id).bootstrapTable('remove', {
+            field: 'vId',
+            values: ids
+        })
+    }
+
+
+    /* 修改行ID值为1的数据 */
+    function updateRowByUniqueId(id) {
+        var ids = $.table.selectColumns("vId");
+        $("#" + id).bootstrapTable('updateByUniqueId', {
+            vId: ids,
+            row: {
+                vId: ids,
+            }
+        })
+    }
+
+
+    /* 删除行ID值为1的数据 */
+    function removeRowByUniqueId() {
+        $("#form-config-test").bootstrapTable('removeByUniqueId', 1)
+    }
+
+    /* 删除所有表格行 */
+    function removeRowAll() {
+        $("#form-config-test").bootstrapTable('removeAll')
+    }
+
+    /* 修改表格行 */
+    function updateRow() {
+        var randomId = 100 + ~~(Math.random() * 100)
+        $("#form-config-test").bootstrapTable('updateRow', {
+            index: 0, // 你想修改哪行，0表示第一行
+            row: {
+                userId: randomId,
+                userCode: 3000000 + randomId,
+                userName: '测试' + randomId,
+                userPhone: '1599999999',
+                userEmail: 'ry2@qq.com',
+                userBalance: 50 + randomId,
+            }
+        })
+    }
+
+
+    /* 查询表格所有数据值 */
+    function getData() {
+        var data = $("#form-config-test").bootstrapTable('getData');
+        alert(JSON.stringify(data))
+    }
+
+    /* 查询行ID值为1的数据 */
+    function getRowByUniqueId() {
+        var data = $("#" + table.options.id).bootstrapTable('getRowByUniqueId', 1);
+        alert(JSON.stringify(data))
+    }
+
+    /* 查询表格选择行数据值 */
+    function getSelections() {
+        var data = $("#form-config-test").bootstrapTable('getSelections');
+        alert(JSON.stringify(data))
+    }
+
+</script>
+</body>
+</html>

@@ -3,6 +3,7 @@ package work.skymoyo.mock.core.resource.dao;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+import work.skymoyo.mock.core.admin.model.MockConfigVO;
 import work.skymoyo.mock.core.resource.entity.MockConfig;
 
 import java.util.List;
@@ -94,5 +95,6 @@ public interface MockConfigDao {
     int deleteById(Long id);
 
 
+    MockConfigVO selectVO(long id);
 }
 

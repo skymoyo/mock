@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('规则配置')"/>
+    <th:block th:include="include :: jsonview-css"/>
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+
+    <form class="form-horizontal m" id="form-config-edit">
+        <h4 class="form-header h4">路由配置信息</h4>
+        <div class="row">
+            <div class="col-sm-6">
+                <input class="form-control" name="ruleList" id="ruleList"
+                       th:field="*{ruleList}" readonly="true" type="hidden">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label is-required">规则编码：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="mockCode" id="mockCode"
+                               th:field="*{mockCode}" readonly="true">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label is-required">规则名称：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="name" id="name"
+                               th:field="*{name}" readonly="true">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label is-required">规则路由：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="route" id="route"
+                               th:field="*{route}" readonly="true">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h4 class="form-header h4">规则详情</h4>
+        <div class="row">
+            <div class="col-sm-12">
+                <button type="button" class="btn btn-white btn-sm" onclick="test()">测试</button>
+                <!--<button type="button" class="btn btn-white btn-sm" onclick="sub.delRow()"><i class="fa fa-minus"> 删除</i>-->
+                <!--</button>-->
+                <div class="col-sm-12 select-table table-striped">
+                    <table id="bootstrap-table"></table>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+<th:block th:include="include :: footer"/>
+
+<script>
+
+
+</script>
+</body>
+</html>

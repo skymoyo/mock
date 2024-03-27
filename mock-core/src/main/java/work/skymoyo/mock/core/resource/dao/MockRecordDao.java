@@ -43,6 +43,14 @@ public interface MockRecordDao {
     List<MockRecord> select(@Param("appId") String appId, @Param("threadId") long threadId);
 
 
+    /**
+     * 通过实体作为筛选条件查询
+     *
+     * @param mockRecord 实例对象
+     * @return 对象列表
+     */
+    List<MockRecord> queryAll(MockRecord mockRecord);
+
 //    /**
 //     * 通过ID查询单条数据
 //     *
@@ -61,13 +69,7 @@ public interface MockRecordDao {
 //    List<MockRecord> queryAllByLimit(@Param("offset") int offset, @Param("limit") int limit);
 //
 //
-//    /**
-//     * 通过实体作为筛选条件查询
-//     *
-//     * @param mockRecord 实例对象
-//     * @return 对象列表
-//     */
-//    List<MockRecord> queryAll(MockRecord mockRecord);
+
 //
 //
 //    /**

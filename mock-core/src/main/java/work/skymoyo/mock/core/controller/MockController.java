@@ -31,7 +31,7 @@ public class MockController {
     private MockHandleManager mockHandleManager;
 
 
-    @RequestMapping(value = "/allReq/**", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/allReq/**")
     public MockResp<String> mock(@RequestBody MockReq req) {
         MockRecord record = new MockRecord();
         record.setAppId(req.getAppId());
@@ -67,7 +67,7 @@ public class MockController {
         return exec;
     }
 
-    @RequestMapping(value = "/**", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/agent/**")
     public Object mock(HttpServletRequest request, HttpServletResponse response) {
         return mockService.mockHttp(request, response);
     }

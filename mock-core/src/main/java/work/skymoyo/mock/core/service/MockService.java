@@ -5,7 +5,7 @@ import com.alibaba.fastjson.TypeReference;
 import work.skymoyo.mock.common.exception.MockException;
 import work.skymoyo.mock.common.model.MockDataBo;
 import work.skymoyo.mock.common.model.MockReq;
-import work.skymoyo.mock.common.model.MockResp;
+import work.skymoyo.mock.core.admin.model.MockRuleVO;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public interface MockService {
@@ -62,6 +63,8 @@ public interface MockService {
 
 
     MockDataBo mock(MockReq req);
+
+    MockDataBo mock(MockReq req, List<MockRuleVO> ruleVOList);
 
     String mockHttp(HttpServletRequest request, HttpServletResponse response);
 

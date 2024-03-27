@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('请求记录')"/>
+</head>
+<body class="gray-bg">
+<div class="container-div">
+    <div class="row">
+        <div class="col-sm-12 search-collapse">
+            <form id="post-form">
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            系统id：<input type="text" name="appId"/>
+                        </li>
+                        <li>
+                            系统名称：<input type="text" name="appName"/>
+                        </li>
+                        <li>
+                            路由：<input type="text" name="route"/>
+                        </li>
+                        <li>
+                            mock请求：<input type="text" name="mockReq"/>
+                        </li>
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i
+                                    class="fa fa-search"></i>&nbsp;搜索</a>
+                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i
+                                    class="fa fa-refresh"></i>&nbsp;重置</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+
+        <div class="btn-group-sm" id="toolbar" role="group">
+            <!--<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:post:add">-->
+            <!--<i class="fa fa-plus"></i> 新增-->
+            <!--</a>-->
+            <!--<a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="system:post:edit">-->
+            <!--<i class="fa fa-edit"></i> 修改-->
+            <!--</a>-->
+            <!--<a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="system:post:remove">-->
+            <!--<i class="fa fa-remove"></i> 删除-->
+            <!--</a>-->
+            <!--<a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:post:export">-->
+            <!--<i class="fa fa-download"></i> 导出-->
+            <!--</a>-->
+
+        </div>
+
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table"></table>
+        </div>
+    </div>
+</div>
+<th:block th:include="include :: footer"/>
+<script th:inline="javascript">
+    var editFlag = [];
+    var removeFlag = [];
+    var datas = [];
+    var prefix = ctx + "admin/record";
+
+    $(function () {
+        var options = {
+            url: prefix + "/list",
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            exportUrl: prefix + "/export",
+            sortName: "id",
+            sortOrder: "desc",
+            modalName: "id",
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field: 'id',
+                    title: 'ID',
+                    visible: false
+                },
+                {
+                    field: 'appId',
+                    title: '系统id'
+                },
+                {
+                    field: 'appName',
+                    title: '系统名称'
+                },
+                {
+                    field: 'threadId',
+                    title: '线程id'
+                },
+                {
+                    field: 'uuid',
+                    title: '请求id'
+                },
+                {
+                    field: 'route',
+                    title: '路由'
+                },
+                {
+                    field: 'mockReq',
+                    title: 'mock请求',
+                    formatter: function (value, row, index) {
+                        return $.table.tooltip(value, 30, "open")
+                    }
+                },
+                {
+                    field: 'mockResp',
+                    title: 'mock返回',
+                    formatter: function (value, row, index) {
+                        return $.table.tooltip(value, 30, "open");
+                    }
+                },
+                {
+                    field: 'createTime',
+                    title: '创建时间'
+                },
+                {
+                    field: 'updateTime',
+                    title: '更新时间'
+                }
+                // , {
+                //     title: '操作',
+                //     align: 'center',
+                //     formatter: function (value, row, index) {
+                //         var actions = [];
+                //         actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.postId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                //         actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.postId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                //         return actions.join('');
+                //     }
+                // }
+            ]
+        };
+        $.table.init(options);
+    });
+</script>
+</body>
+</html>

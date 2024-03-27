@@ -4,6 +4,11 @@
  - 实现 com.alibaba.dubbo:2.6.0 mock
  - classpath:MockAgent 指定需要代理的方法
 
+# 能做什么？
+ - mock-core 单个系统提供 所有http请求类型返回 根据url配置规则返回对应的报文。
+ - 业务系统 结合mock-agent 和 mock-client 目前支持 http和netty  2种通讯方式，支持SPI扩展通讯方式。
+ --
+
 # 版本升级
 
 ## 0.1.x

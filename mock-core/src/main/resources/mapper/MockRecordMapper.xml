@@ -67,6 +67,40 @@
     </select>
 
 
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="MockRecordMap">
+        select
+        <include refid="BaseColumn"/>
+        from mock_record
+        <where>
+            <if test="id != null">
+                and ID = #{id}
+            </if>
+            <if test="appId != null and appId != ''">
+                and app_id = #{appId}
+            </if>
+            <if test="appName != null and appName != ''">
+                and app_name = #{appName}
+            </if>
+            <if test="threadId != null">
+                and thread_id = #{threadId}
+            </if>
+            <if test="uuid != null and uuid != ''">
+                and uuid = #{uuid}
+            </if>
+            <if test="client != null and client != ''">
+                and client = #{client}
+            </if>
+            <if test="mockReq != null and mockReq != ''">
+                and mock_req = #{mockReq}
+            </if>
+            <if test="mockResp != null and mockResp != ''">
+                and mock_resp = #{mockResp}
+            </if>
+        </where>
+    </select>
+
+
     <!--&lt;!&ndash;查询单个&ndash;&gt;-->
     <!--<select id="queryById" resultMap="MockRecordMap">-->
     <!--select-->
@@ -83,38 +117,7 @@
     <!--limit #{offset}, #{limit}-->
     <!--</select>-->
 
-    <!--&lt;!&ndash;通过实体作为筛选条件查询&ndash;&gt;-->
-    <!--<select id="queryAll" resultMap="MockRecordMap">-->
-    <!--select-->
-    <!--<include refid="BaseColumn"/>-->
-    <!--from mock_record-->
-    <!--<where>-->
-    <!--<if test="id != null">-->
-    <!--and ID = #{id}-->
-    <!--</if>-->
-    <!--<if test="appId != null and appId != ''">-->
-    <!--and app_id = #{appId}-->
-    <!--</if>-->
-    <!--<if test="appName != null and appName != ''">-->
-    <!--and app_name = #{appName}-->
-    <!--</if>-->
-    <!--<if test="threadId != null">-->
-    <!--and thread_id = #{threadId}-->
-    <!--</if>-->
-    <!--<if test="uuid != null and uuid != ''">-->
-    <!--and uuid = #{uuid}-->
-    <!--</if>-->
-    <!--<if test="client != null and client != ''">-->
-    <!--and client = #{client}-->
-    <!--</if>-->
-    <!--<if test="mockReq != null and mockReq != ''">-->
-    <!--and mock_req = #{mockReq}-->
-    <!--</if>-->
-    <!--<if test="mockResp != null and mockResp != ''">-->
-    <!--and mock_resp = #{mockResp}-->
-    <!--</if>-->
-    <!--</where>-->
-    <!--</select>-->
+
 
 
     <!--<insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">-->
