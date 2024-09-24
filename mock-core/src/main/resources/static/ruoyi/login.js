@@ -30,17 +30,8 @@ function login() {
         },
         success: function (r) {
             if (r.code == web_status.SUCCESS) {
-                localStorage.setItem("token", r.data);
-
-                $.ajax({
-                    type: "get",
-                    url: ctx + "admin/index",
-                    headers: {
-                        'token': r.data,
-                    }
-                });
+                document.cookie = "token=" + r.data;
                 location.href = ctx + 'admin/index';
-
             } else {
                 $('.imgcode').click();
                 $(".code").val("");

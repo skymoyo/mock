@@ -53,7 +53,7 @@
                 <a class="btn btn-danger multiple" onclick="editFlag()">
                     <i class="fa fa-edit"></i> 启用/禁用编辑
                 </a>
-                <a class="btn btn-success" onclick="insertRuleRow('configEditTable')">
+                <a style="pointer-events:none" class="btn btn-success" onclick="insertRow('configEditTable')">
                     <i class="fa fa-plus"></i> 新增规则
                 </a>
                 <a type="button" class="btn btn-danger  disabled" onclick="removeRow('configEditTable')">
@@ -124,30 +124,33 @@
 <script>
     var cookieMap = new Map();
 
-    function editFlag(id) {
-        if (cookieMap.get(id + "edit") === true) {
-            cookieMap.set(id + "edit", false);
+    function editFlag() {
+        if (cookieMap.get("edit") === true) {
+            cookieMap.set("edit", false);
             $(".praise").attr("disabled", true).css("pointer-events", "none");
         } else {
-            cookieMap.set(id + "edit", true);
-            $('#editRow1').toggleClass('disabled', cookieMap.get(id + "edit") === true);
+            cookieMap.set("edit", true);
+            $('#editRow1').toggleClass('disabled', cookieMap.get("edit") === true);
             $(".praise").attr("disabled", false).css("pointer-events", "none");
         }
         $("#configEditTable").bootstrapTable('refresh', null);
     }
 
     function test() {
-        var ruleList = $("#configEditTable").bootstrapTable('getData');
-        doTest(JSON.stringify(ruleList));
+        doTest($("#ruleList").val());
     }
 
-    function oneTest(id) {
-        var testRow = new Array($('#configEditTable').bootstrapTable('getRowByUniqueId', id));
+    function oneTest(index) {
+        var ruleList = JSON.parse($("#ruleList").val());
+        var testRow = new Array(ruleList[index]);
         doTest(JSON.stringify(testRow));
     }
 
 
     function doTest(ruleListStr) {
+        // var d = $("#form-comm-edit").serializeArray();
+        // var params = $.common.formToJSON("form-comm-edit");
+
         var formData = new FormData();
         var data = $("#configTestDataTable").bootstrapTable('getData');
         var head = $("#configTestHeadTable").bootstrapTable('getData');
@@ -199,8 +202,7 @@
             showToggle: false,
             showColumns: false,
             sidePagination: "client",
-            detailView: true,
-            uniqueId: "id",
+            detailView: false,
             onExpandRow: function (index, row, $detail) {
                 initChildTable(index, row, $detail);
             },
@@ -212,9 +214,7 @@
                     field: 'id',
                     align: 'center',
                     title: "规则id",
-                    formatter(index, row, $detail) {
-                        return getUuid();
-                    }
+                    visible: false
                 },
                 {
                     field: 'ruleCode',
@@ -239,7 +239,7 @@
                     align: 'center',
                     title: '规则返回',
                     formatter: function (value, row, index) {
-                        if (cookieMap.get(row.id + "editFlag")) {
+                        if (cookieMap.get("editFlag")) {
                             return value;
                         }
                         return $.table.tooltip(value, 30, "open");
@@ -262,10 +262,10 @@
                     align: 'center',
                     formatter: function (value, row, index) {
                         var actions = [];
-                        actions.push('<a class="btn btn-success btn-xs " href="javascript:void(0)" onclick="oneTest(\'' + row.id + '\')"><i class="fa fa-sticky-note"></i>测试当前规则</a> ');
-                        actions.push('<a class="btn btn-success btn-xs " href="javascript:void(0)" onclick="editFlag(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-success btn-xs " href="javascript:void(0)" onclick="oneTest(\'' + index + '\')"><i class="fa fa-sticky-note"></i>测试当前规则</a> ');
+                        actions.push('<a class="btn btn-success btn-xs " href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>详情</a> ');
+                        actions.push('<a class="btn btn-success btn-xs " href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
                         // actions.push('<a class="btn btn-danger btn-xs " href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
-                        actions.push('<a class="btn btn-danger btn-xs " href="javascript:void(0)" onclick="insertConditionRow()"><i class="fa fa-plus"></i>添加条件</a>');
                         return actions.join('');
                     }
                 }
@@ -274,13 +274,11 @@
         $.table.init(options);
     });
 
-
     initChildTable = function (index, row, $detail) {
         var childTable = $detail.html('<table style="table-layout:fixed"></table>').find('table');
 
         $(childTable).bootstrapTable({
             data: row.conditionList,
-            id: "configConditionEditTable",
             pagination: false,
             showSearch: false,
             showRefresh: false,
@@ -289,34 +287,19 @@
             sidePagination: "client",
             columns: [
                 {
-                    field: 'vId',
-                    align: 'center',
-                    visible: false,
-                    formatter: function (value, row, index) {
-                        return getUuid();
-                    }
-                },
-                {
                     field: 'conditionType',
                     align: 'center',
-                    title: '匹配类型',
-                    editable: true
+                    title: '匹配类型'
                 },
                 {
                     field: 'conditionKey',
                     align: 'center',
-                    title: '匹配条件',
-                    editable: true
+                    title: '匹配条件'
                 }
             ]
         });
 
     };
-
-    function ruleEdit(index) {
-        cookieMap.set(index + "editFlag", true)
-        debugger
-    }
 
     $(function () {
         var options = {
@@ -340,10 +323,7 @@
                 {
                     field: 'vId',
                     align: 'center',
-                    visible: false,
-                    formatter: function (value, row, index) {
-                        return getUuid();
-                    }
+                    visible: false
                 },
                 {
                     field: 'headKey',
@@ -385,10 +365,7 @@
                 {
                     field: 'vId',
                     align: 'center',
-                    visible: false,
-                    formatter: function (value, row, index) {
-                        return getUuid();
-                    }
+                    visible: false
                 },
                 {
                     field: 'dataKey',
@@ -422,6 +399,7 @@
         $("#" + id).bootstrapTable('insertRow', {
             index: 0,
             row: {
+                vId: getUuid(),
                 dataKey: "username",
                 dataValue: "admin",
             }
@@ -429,37 +407,9 @@
             $("#" + id).bootstrapTable('insertRow', {
                 index: 1,
                 row: {
+                    vId: getUuid(),
                     dataKey: "password",
                     dataValue: "admin123",
-                }
-            })
-    }
-
-    /* 新增表格行 */
-    function insertRuleRow(id) {
-        $("#" + id).bootstrapTable('insertRow', {
-            index: 0,
-            row: {
-                id: getUuid(),
-                ruleCode: "",
-                ruleName: "",
-                ruleType: "",
-                ruleResult: "",
-                ruleClass: "",
-                blockTime: "",
-            },
-        })
-    }
-
-    /* 新增表格行 */
-    function insertConditionRow() {
-        debugger
-        $("#configConditionEditTable")
-            .bootstrapTable('insertRow', {
-                index: 0,
-                row: {
-                    conditionType: "",
-                    conditionKey: ""
                 }
             })
     }

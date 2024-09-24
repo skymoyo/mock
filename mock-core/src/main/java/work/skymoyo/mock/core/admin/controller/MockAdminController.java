@@ -1,5 +1,6 @@
 package work.skymoyo.mock.core.admin.controller;
 
+import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -10,19 +11,20 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import work.skymoyo.mock.common.model.MockDataBo;
 import work.skymoyo.mock.common.model.MockReq;
+import work.skymoyo.mock.core.admin.config.SecurityUtil;
 import work.skymoyo.mock.core.admin.model.*;
 import work.skymoyo.mock.core.admin.service.CaptchaImageService;
+import work.skymoyo.mock.core.admin.utils.DateUtils;
 import work.skymoyo.mock.core.resource.dao.MockConfigDao;
 import work.skymoyo.mock.core.resource.dao.MockRecordDao;
 import work.skymoyo.mock.core.resource.entity.MockConfig;
 import work.skymoyo.mock.core.resource.entity.MockRecord;
 import work.skymoyo.mock.core.service.MockService;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -64,7 +66,6 @@ public class MockAdminController extends BaseController {
     public AjaxResult login(@RequestParam(value = "username", required = false) String username,
                             @RequestParam(value = "password", required = false) String password,
                             ModelMap mmap) {
-
         try {
             MockReq req = new MockReq();
             req.setRoute("/admin/login");
@@ -73,16 +74,19 @@ public class MockAdminController extends BaseController {
             map.put("username", username);
             map.put("password", password);
             req.setData(map);
-//            MockDataBo mock = mockService.mock(req);
-//
-//            mmap.put("token", "todo");
+            MockDataBo mock = mockService.mock(req);
+            String code = JSON.parseObject(mock.getData()).getString("code");
+            if (!Objects.equals(code, "0")) {
+                return AjaxResult.error("账户或密码错误");
+            }
 
             MockReq userReq = new MockReq();
             userReq.setRoute("/admin/getInfo");
             JSONObject user = JSON.parseObject(mockService.mock(userReq).getData()).getJSONObject("user");
             mmap.put("user", JSON.parseObject(user.toJSONString(), SysUser.class));
 
-            return AjaxResult.success("成功", "todo token");
+            String token = SecurityUtil.encrypt(user.getString("userId")) + "·" + SecurityUtil.encrypt(DateUtil.offsetHour(new Date(), 1).toString(DateUtils.YYYYMMDDHHMMSS));
+            return AjaxResult.success("成功", token);
         } catch (Exception e) {
             return AjaxResult.error(e.getMessage());
         }
@@ -90,13 +94,7 @@ public class MockAdminController extends BaseController {
 
 
     @GetMapping(value = "/index")
-    public String index(HttpServletRequest request, ModelMap mmap) {
-//        String token = request.getHeader("token");
-//        if (!StringUtils.hasLength(token)) {
-//            mmap.put("captchaEnabled", false);
-//            return "login";
-//        }
-
+    public String index(ModelMap mmap) {
         // 取身份信息
         MockReq req = new MockReq();
         req.setRoute("/admin/getInfo");
@@ -109,6 +107,29 @@ public class MockAdminController extends BaseController {
         JSONObject user = JSON.parseObject(mockService.mock(req).getData()).getJSONObject("user");
         mmap.put("user", JSON.parseObject(user.toJSONString(), SysUser.class));
         return "index";
+    }
+
+    @GetMapping(value = "/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response, ModelMap mmap) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
+            mmap.put("captchaEnabled", false);
+            return "login";
+        }
+
+        for (Cookie cookie : cookies) {
+            if (Objects.equals(cookie.getName(), "token")) {
+                cookie.setValue(null);
+                cookie.setMaxAge(0);
+                cookie.setPath("/");
+                response.addCookie(cookie);
+                mmap.put("captchaEnabled", false);
+                return "login";
+            }
+        }
+
+        mmap.put("captchaEnabled", false);
+        return "login";
     }
 
     @GetMapping(value = "/system/main")
