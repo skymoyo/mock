@@ -30,7 +30,6 @@ function login() {
         },
         success: function (r) {
             if (r.code == web_status.SUCCESS) {
-                document.cookie = "token=" + r.data;
                 location.href = ctx + 'admin/index';
             } else {
                 $('.imgcode').click();

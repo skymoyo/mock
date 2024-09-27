@@ -12,8 +12,9 @@ import java.util.Map;
 @Slf4j
 public class AgentManager {
 
-    public static void proxy(ClassPool pool) {
+    public static void proxy() {
         Map<String, Agent> spiMap = SpiManager.getSpiMap(Agent.class);
+        ClassPool pool = new ClassPool(true);
 
         spiMap.forEach((k, v) -> {
             try {

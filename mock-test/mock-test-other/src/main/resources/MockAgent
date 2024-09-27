@@ -1,5 +1,6 @@
 
 ## 代理TestService  helloSpi 方法
+## 接口和实现类同时处理，把接口放在上面
 work.skymoyo.test.service.TestService#helloSpi
 work.skymoyo.test.service.TestService#getPerson
 work.skymoyo.test.service.RemoteTestService#getPerson
@@ -8,3 +9,7 @@ work.skymoyo.test.service.RemoteTestService#testVoid
 ##work.skymoyo.test.service.RestTemplateService#rest
 org.springframework.web.client.RestTemplate#exchange
 ##org.apache.http.impl.client.CloseableHttpClient#execute
+work.skymoyo.test.service.TestInterface#test
+work.skymoyo.test.service.TestInterface#defaultTest
+work.skymoyo.test.service.TestInterfaceImpl#test
+work.skymoyo.test.resource.dao.MockRuleDao#queryResultById

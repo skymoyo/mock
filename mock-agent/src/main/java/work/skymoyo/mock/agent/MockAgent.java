@@ -1,6 +1,5 @@
 package work.skymoyo.mock.agent;
 
-import javassist.ClassPool;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.instrument.Instrumentation;
@@ -19,11 +18,10 @@ public class MockAgent {
     public static void premain(String arg, Instrumentation instrumentation) throws Exception {
         try {
             log.debug("mock agent start");
-            ClassPool pool = new ClassPool(true);
 
             Class<?> agentManager = Class.forName("work.skymoyo.mock.client.agent.AgentManager");
-            Method proxy = agentManager.getMethod("proxy", ClassPool.class);
-            proxy.invoke(agentManager.newInstance(), pool);
+            Method proxy = agentManager.getMethod("proxy");
+            proxy.invoke(agentManager.newInstance());
 
             log.debug("mock agent end\r\n");
         } catch (Throwable e) {

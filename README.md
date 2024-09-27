@@ -18,6 +18,8 @@
 - 加入接口塞时间
 - 服务端下发appId
 - mock请求数据记录
+- mock-core 响应结果可参数配置化
+- interface 拦截
 
 **fix:**
 - 针对泛型，规则里配置 class,默认使用fastjson,无需使用自定义解析规则
@@ -118,6 +120,5 @@ mock.test.dubbo.cusmer.TestServiceTest
  - mock-test: 一些测试内容
 
 # todo
-mock-core 响应结果可参数配置化!!!
 
 

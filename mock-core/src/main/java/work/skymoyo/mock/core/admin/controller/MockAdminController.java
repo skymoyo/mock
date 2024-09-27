@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
@@ -22,7 +23,6 @@ import work.skymoyo.mock.core.resource.entity.MockRecord;
 import work.skymoyo.mock.core.service.MockService;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -39,6 +39,10 @@ public class MockAdminController extends BaseController {
     private MockRecordDao recordDao;
     @Autowired
     private MockConfigDao mockConfigDao;
+    @Value("${server.servlet.context-path}")
+    private String contextPath;
+    @Value("${mock.version}")
+    private String mockVersion;
 
 
     @GetMapping(value = "/server/index")
@@ -51,8 +55,8 @@ public class MockAdminController extends BaseController {
 
     @ResponseBody
     @GetMapping(value = "/captchaImage", produces = {"application/json"})
-    public AjaxResult captchaImage(HttpServletRequest request, HttpServletResponse response) {
-        return captchaImageService.captchaImage(response);
+    public AjaxResult captchaImage() {
+        return captchaImageService.captchaImage(this.getResponse());
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
@@ -86,7 +90,11 @@ public class MockAdminController extends BaseController {
             mmap.put("user", JSON.parseObject(user.toJSONString(), SysUser.class));
 
             String token = SecurityUtil.encrypt(user.getString("userId")) + "·" + SecurityUtil.encrypt(DateUtil.offsetHour(new Date(), 1).toString(DateUtils.YYYYMMDDHHMMSS));
-            return AjaxResult.success("成功", token);
+            HttpServletResponse response = this.getResponse();
+            Cookie cookie = new Cookie("token", token);
+            cookie.setPath(contextPath);
+            response.addCookie(cookie);
+            return AjaxResult.success();
         } catch (Exception e) {
             return AjaxResult.error(e.getMessage());
         }
@@ -110,8 +118,8 @@ public class MockAdminController extends BaseController {
     }
 
     @GetMapping(value = "/logout")
-    public String logout(HttpServletRequest request, HttpServletResponse response, ModelMap mmap) {
-        Cookie[] cookies = request.getCookies();
+    public String logout(ModelMap mmap) {
+        Cookie[] cookies = this.getRequest().getCookies();
         if (cookies == null) {
             mmap.put("captchaEnabled", false);
             return "login";
@@ -121,8 +129,8 @@ public class MockAdminController extends BaseController {
             if (Objects.equals(cookie.getName(), "token")) {
                 cookie.setValue(null);
                 cookie.setMaxAge(0);
-                cookie.setPath("/");
-                response.addCookie(cookie);
+                cookie.setPath(contextPath);
+                this.getResponse().addCookie(cookie);
                 mmap.put("captchaEnabled", false);
                 return "login";
             }
@@ -134,21 +142,21 @@ public class MockAdminController extends BaseController {
 
     @GetMapping(value = "/system/main")
     public String main(ModelMap mmap) {
-        mmap.put("version", "0.1.1");
+        mmap.put("version", mockVersion);
         return "main";
     }
 
 
     @GetMapping(value = "/record/index")
     public String recordIndex(ModelMap mmap) {
-        mmap.put("version", "0.1.1");
-        return "/mock/record";
+        mmap.put("version", mockVersion);
+        return "mock/record";
     }
 
     @GetMapping(value = "/config/index")
     public String configIndex(ModelMap mmap) {
-        mmap.put("version", "0.1.1");
-        return "/mock/mockConfig";
+        mmap.put("version", mockVersion);
+        return "mock/mockConfig";
     }
 
 
