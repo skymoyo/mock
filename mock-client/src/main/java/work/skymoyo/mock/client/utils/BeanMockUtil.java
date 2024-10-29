@@ -1,9 +1,9 @@
 package work.skymoyo.mock.client.utils;
 
 import com.alibaba.fastjson.JSON;
+import org.springframework.util.StringUtils;
 import work.skymoyo.mock.client.spi.AbstractClassDeserialize;
 import work.skymoyo.mock.client.spi.ClassDeserializeManager;
-import work.skymoyo.mock.common.exception.MockException;
 
 import java.lang.ref.SoftReference;
 import java.lang.reflect.Method;
@@ -68,11 +68,12 @@ public class BeanMockUtil {
             return (T) deserialize.deserialize(res, type, dataClass);
         }
 
-
-        try {
-            type = Class.forName(dataClass);
-        } catch (ClassNotFoundException e) {
-            throw new MockException("解析返回数据异常：" + e.getMessage());
+        if (StringUtils.hasLength(dataClass)) {
+            try {
+                return (T) JSON.parseObject(res, Class.forName(dataClass));
+            } catch (Exception ignore) {
+                //ignore
+            }
         }
 
         return (T) JSON.parseObject(res, type);

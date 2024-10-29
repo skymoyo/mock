@@ -31,27 +31,22 @@ public class AspectAgentProxyExecutor {
                     .map(Object::getClass)
                     .toArray(Class[]::new);
 
-            Method method;
-            if (clazz.isInterface()) {
-                method = Arrays.stream(clazz.getMethods())
-                        .filter(m -> Objects.equals(m.getName(), methodName))
-                        .filter(m -> {
-                            Class<?>[] parameterTypes = m.getParameterTypes();
-                            if (parameterTypes.length != argsClass.length) {
+            Method method = Arrays.stream(clazz.getMethods())
+                    .filter(m -> Objects.equals(m.getName(), methodName))
+                    .filter(m -> {
+                        Class<?>[] parameterTypes = m.getParameterTypes();
+                        if (parameterTypes.length != argsClass.length) {
+                            return false;
+                        }
+
+                        for (int i = 0; i < parameterTypes.length; i++) {
+                            if (parameterTypes[i].isAssignableFrom(argsClass[i])) {
                                 return false;
                             }
-
-                            for (int i = 0; i < parameterTypes.length; i++) {
-                                if (parameterTypes[i] != argsClass[i]) {
-                                    return false;
-                                }
-                            }
-                            return true;
-                        }).findFirst()
-                        .get();
-            } else {
-                method = clazz.getDeclaredMethod(methodName, argsClass);
-            }
+                        }
+                        return true;
+                    }).findFirst()
+                    .get();
 
             return MethodMockUtil.proxyInvoker(method, args);
         } catch (Exception e) {

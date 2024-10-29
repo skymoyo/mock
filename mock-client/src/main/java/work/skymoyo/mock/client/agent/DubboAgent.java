@@ -6,6 +6,8 @@ import javassist.CtMethod;
 import lombok.extern.slf4j.Slf4j;
 import work.skymoyo.mock.common.spi.Spi;
 
+import java.lang.instrument.Instrumentation;
+
 /**
  * dubbo 2.6.0 代理
  */
@@ -14,7 +16,7 @@ import work.skymoyo.mock.common.spi.Spi;
 public class DubboAgent implements Agent {
 
     @Override
-    public void proxy(ClassPool pool) {
+    public void proxy(String arg, Instrumentation instrumentation, ClassPool pool) {
         try {
             //直接引用
             CtClass targetClass = pool.get("com.alibaba.dubbo.rpc.proxy.InvokerInvocationHandler");

@@ -6,3 +6,4 @@ Premain-Class: work.skymoyo.mock.agent.MockAgent
 Start-Class: work.skymoyo.mock.agent.MockAgent
 Build-Jdk-Spec: 1.8
 Created-By: Maven JAR Plugin 3.2.2
+Can-Redefine-Classes: true

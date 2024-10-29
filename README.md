@@ -7,66 +7,6 @@
 # 能做什么？
  - mock-core 单个系统提供 所有http请求类型返回 根据url配置规则返回对应的报文。
  - 业务系统 结合mock-agent 和 mock-client 目前支持 http和netty  2种通讯方式，支持SPI扩展通讯方式。
- --
-
-# 版本升级
-
-## 0.1.x
-### 0.1.1
-
-**feature:**
-- 加入接口塞时间
-- 服务端下发appId
-- mock请求数据记录
-- mock-core 响应结果可参数配置化
-- interface 拦截
-
-**fix:**
-- 针对泛型，规则里配置 class,默认使用fastjson,无需使用自定义解析规则
-- 服务端返回MockException时，mockHttpClient 正确提示异常
-
-### 0.1.0
-**feature:**
- - 请求参数改成spel对比
- - 返回报文支持spel替换文本
- - Spi 支持 **重复注解**
- - 针对返回数据通过@Spi可自定义解析规则 
- - 针对泛型，规则里配置 class
- 
-**fix:**
-- 非public方法无法代理
-- 方法返回void无法代理 
-    
-**notice**
-- 不兼容之前版本
-- 代理 interface 接口是参数无法获取正确的参数名称，只能获取到名称 arg0 arg1...
-
- 
-## 0.0.X
-### 0.0.3
-**feature:**
-- ProxyScanAgent  通过 mock.proxy.file 配置取文件，未配置取 classpath:MockAgent
-- 优化了部分代码
-
-**fix:**
- - [RpcManager 导致 OOM](https://gitee.com/skymoyo/mock/issues/I5YAUG)   
- - 通讯client 发送时 应该调用解密方法，而非加密
- - 代理 方法 返回List\<POJO\> 解析异常
- - 服务端返回MockException时，Netty客户端提示  mockNettyClient timeout
- 
-### 0.0.2
-**feature:**
-- 代理mock-agent 改成SPI 加载方式
-- 通过 classpath:MockAgent 指定需要代理的方法
-- 经过代理后通过 mock.config.enable 配置 控制是否进行mock
-
-**fix:**
- - netty客户端超过1024字节接口不完整
- - agent代理方法retureClass是pojo导致编译失败
-
-### 0.0.1
-- dubbo 2.6.0 代理
-
 
 # 快速开始
 
@@ -120,5 +60,71 @@ mock.test.dubbo.cusmer.TestServiceTest
  - mock-test: 一些测试内容
 
 # todo
+-
+-
+
+
+# 版本升级
+
+## 0.1.x
+### 0.1.1
+
+**feature:**
+- 加入接口塞时间
+- 服务端下发appId
+- mock请求数据记录
+- mock-core 响应结果可参数配置化
+- interface 拦截
+- 通过 -javaagent:{路径}/mock-agent-#{version}.jar=#{MockAgent} 需要代理的文件路径
+
+**delete**
+- ProxyScanAgent  通过 mock.proxy.file 配置取文件，未配置取 classpath:MockAgent
+
+**fix:**
+- 针对泛型，规则里配置 class,默认使用fastjson,无需使用自定义解析规则
+- 服务端返回MockException时，mockHttpClient 正确提示异常
+
+### 0.1.0
+**feature:**
+ - 请求参数改成spel对比
+ - 返回报文支持spel替换文本
+ - Spi 支持 **重复注解**
+ - 针对返回数据通过@Spi可自定义解析规则 
+ - 针对泛型，规则里配置 class
+ 
+**fix:**
+- 非public方法无法代理
+- 方法返回void无法代理 
+    
+**notice**
+- 不兼容之前版本
+- 代理 interface 接口是参数无法获取正确的参数名称，只能获取到名称 arg0 arg1...
+
+ 
+## 0.0.X
+### 0.0.3
+**feature:**
+- ProxyScanAgent  通过 mock.proxy.file 配置取文件，未配置取 classpath:MockAgent
+- 优化了部分代码
+
+**fix:**
+ - [RpcManager 导致 OOM](https://gitee.com/skymoyo/mock/issues/I5YAUG)   
+ - 通讯client 发送时 应该调用解密方法，而非加密
+ - 代理 方法 返回List\<POJO\> 解析异常
+ - 服务端返回MockException时，Netty客户端提示  mockNettyClient timeout
+ 
+### 0.0.2
+**feature:**
+- 代理mock-agent 改成SPI 加载方式
+- 通过 classpath:MockAgent 指定需要代理的方法
+- 经过代理后通过 mock.config.enable 配置 控制是否进行mock
+
+**fix:**
+ - netty客户端超过1024字节接口不完整
+ - agent代理方法retureClass是pojo导致编译失败
+
+### 0.0.1
+- dubbo 2.6.0 代理
+
 
 

@@ -1,6 +1,5 @@
 package work.skymoyo.mock.client.agent;
 
-import javassist.ClassPath;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
@@ -9,12 +8,14 @@ import javassist.bytecode.ClassFile;
 import javassist.bytecode.ConstPool;
 import javassist.bytecode.annotation.Annotation;
 import lombok.extern.slf4j.Slf4j;
+import org.reflections.Reflections;
 import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
 import work.skymoyo.mock.common.spi.Spi;
 
 import java.io.*;
-import java.lang.reflect.Field;
+import java.lang.instrument.ClassDefinition;
+import java.lang.instrument.Instrumentation;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -24,24 +25,17 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @Slf4j
 public class ProxyScanAgent implements Agent {
 
-    private static String SCAN_PATH;
-
-    static {
-        SCAN_PATH = Optional.ofNullable(System.getProperty("mock.proxy.file"))
-                .filter(StringUtils::hasLength)
-                .orElse("classpath:MockAgent");
-    }
-
     private static List<String> DEF = new ArrayList<>(0);
 
+
     @Override
-    public void proxy(ClassPool pool) {
+    public void proxy(String arg, Instrumentation instrumentation, ClassPool pool) {
 
         File file;
         try {
-            file = ResourceUtils.getFile(SCAN_PATH);
+            file = ResourceUtils.getFile(StringUtils.hasLength(arg) ? arg : "classpath:MockAgent");
         } catch (FileNotFoundException e) {
-            log.warn("{}:文件不存在,忽略执行", SCAN_PATH);
+            log.warn("{}:文件不存在,忽略执行", arg);
             return;
         }
 
@@ -95,16 +89,12 @@ public class ProxyScanAgent implements Agent {
                                 boolean anyMatch = Arrays.stream(ctClass.getAnnotations())
                                         .anyMatch(a -> Objects.equals(a.toString(), "@org.springframework.stereotype.Repository"));
                                 if (anyMatch) {
-                                    this.createAnnotationMethodProxy(className, methodList, ctClass);
+                                    return Collections.singletonList(this.createAnnotationMethodProxy(className, methodList, ctClass));
                                 } else {
-                                    this.createServiceMethodProxy(pool, className, methodList, ctClass);
+                                    return this.createServiceMethodProxy(pool, className, methodList, ctClass);
                                 }
-                                return Collections.singletonList(ctClass);
                             } else {
-                                this.createMethodProxy(className, methodList, ctClass);
-                                List<CtClass> classList = Arrays.stream(ctClass.getInterfaces()).collect(Collectors.toList());
-                                classList.add(ctClass);
-                                return classList;
+                                return this.createMethodProxy(className, methodList, ctClass);
                             }
                         } catch (Exception e) {
                             log.warn("处理class:{} 异常:{}", className, e.getMessage(), e);
@@ -117,7 +107,9 @@ public class ProxyScanAgent implements Agent {
                     .forEach(c -> {
                         try {
                             c.writeFile("D:\\agentClass");
-                            c.toClass();
+                            Class<?> aClass = Class.forName(c.getName());
+                            //重新加载
+                            instrumentation.redefineClasses(new ClassDefinition(aClass, c.toBytecode()));
                         } catch (Exception e) {
                             log.warn("加载class:{} 异常:{}", c, e.getMessage(), e);
                         }
@@ -135,45 +127,28 @@ public class ProxyScanAgent implements Agent {
      * @param methodList
      * @param ctClass
      */
-    private void createServiceMethodProxy(ClassPool pool, String className, List<String> methodList, CtClass ctClass) {
+    private List<CtClass> createServiceMethodProxy(ClassPool pool, String className, List<String> methodList, CtClass ctClass) {
 
-        this.createAnnotationMethodProxy(className, methodList, ctClass);
+        ArrayList<CtClass> ctClassList = new ArrayList<>();
+        ctClassList.add(this.createAnnotationMethodProxy(className, methodList, ctClass));
 
-        boolean needCreateImpl = true;
         try {
+            Class aClass = Class.forName(className);
+            final Reflections reflections = new Reflections("./", aClass);
+            Set<Class> subTypesOf = reflections.getSubTypesOf(aClass);
 
-            Class poolClass = pool.getClass();
-            Field classes = poolClass.getDeclaredField("classes");
-            classes.setAccessible(true);
-            Hashtable hashtable = (Hashtable) classes.get(pool);
-            Set set = hashtable.keySet();
-            for (Object next : set) {
-                boolean assignableFrom = Objects.equals(next.getClass().getName(), className);
-//                System.out.println(next + ":" + assignableFrom);
-                if (assignableFrom) {
-                    System.out.println("成功");
-                    try {
-                        CtClass implCtClass = pool.get(next.getClass().getName());
-                        this.createAnnotationMethodProxy(className, methodList, implCtClass);
-                        implCtClass.toClass();
-                        needCreateImpl = false;
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+            subTypesOf.forEach(sub -> {
+                try {
+                    ctClassList.add(this.createAnnotationMethodProxy(sub.getSimpleName(), methodList, pool.get(sub.getName())));
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            }
-
-            if (needCreateImpl) {
-                //todo createImpl
-
-            }
-
-            System.gc();
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
 //
-
+        return ctClassList;
     }
 
     /**
@@ -183,7 +158,7 @@ public class ProxyScanAgent implements Agent {
      * @param methodList
      * @param ctClass
      */
-    private void createAnnotationMethodProxy(String className, List<String> methodList, CtClass ctClass) {
+    private CtClass createAnnotationMethodProxy(String className, List<String> methodList, CtClass ctClass) {
 
         ClassFile classFile = ctClass.getClassFile();
         ConstPool constPool = classFile.getConstPool();
@@ -217,6 +192,9 @@ public class ProxyScanAgent implements Agent {
                 }
             });
         }
+
+        return ctClass;
+
     }
 
     /**
@@ -226,7 +204,7 @@ public class ProxyScanAgent implements Agent {
      * @param methodList
      * @param ctClass
      */
-    private void createMethodProxy(String className, List<String> methodList, CtClass ctClass) {
+    private List<CtClass> createMethodProxy(String className, List<String> methodList, CtClass ctClass) {
         if (methodList.isEmpty()) {
             Arrays.stream(ctClass.getDeclaredMethods())
                     .forEach(method -> {
@@ -244,6 +222,8 @@ public class ProxyScanAgent implements Agent {
                 }
             });
         }
+
+        return Collections.singletonList(ctClass);
     }
 
     private void createMethod(String clazzName, CtMethod method) {

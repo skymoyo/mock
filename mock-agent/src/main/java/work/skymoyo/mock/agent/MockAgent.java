@@ -20,8 +20,8 @@ public class MockAgent {
             log.debug("mock agent start");
 
             Class<?> agentManager = Class.forName("work.skymoyo.mock.client.agent.AgentManager");
-            Method proxy = agentManager.getMethod("proxy");
-            proxy.invoke(agentManager.newInstance());
+            Method proxy = agentManager.getMethod("proxy", String.class, Instrumentation.class);
+            proxy.invoke(agentManager.newInstance(), arg, instrumentation);
 
             log.debug("mock agent end\r\n");
         } catch (Throwable e) {
